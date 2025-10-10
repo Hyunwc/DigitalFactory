@@ -7,8 +7,22 @@ public class DigitalFactory : ModuleRules
 	public DigitalFactory(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+
+		PublicIncludePaths.AddRange(new string[] { "DigitalFactory" });
+
+		PublicDependencyModuleNames.AddRange(new string[] { 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"EnhancedInput",
+			"UMG",
+			"NavigationSystem",
+			"AIModule",
+			"GameplayTasks",
+			"GameplayTags",
+			"GameplayAbilities"
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
