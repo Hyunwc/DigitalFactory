@@ -19,12 +19,17 @@ class DIGITALFACTORY_API ADFAIController : public AAIController
 public:
 	ADFAIController();
 
-	void RunAI();
-	void StopAI();
-
 protected:
 	// 컨트롤러가 폰에 빙의해서 조종을 할 때 발생되는 이벤트 함수
 	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void BeginPlay() override;
+
+public:
+	void RunAI();
+	void StopAI();
+
+	void SetNextCell();
 
 private:
 	UPROPERTY()

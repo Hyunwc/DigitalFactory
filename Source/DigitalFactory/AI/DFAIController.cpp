@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "EngineUtils.h"
+#include "Cell/DFCellBase.h"
 #include "Engine/TargetPoint.h"
 
 ADFAIController::ADFAIController()
@@ -32,25 +33,28 @@ void ADFAIController::RunAI()
 		// 복귀장소 저장
 		Blackboard->SetValueAsVector(BBKEY_HOMEPOS, GetPawn()->GetActorLocation());
 
-		// CellPos 설정 (테스트용)
-		FVector TargetLocation;
-
-		for (TActorIterator<ATargetPoint> It(GetWorld()); It; ++It)
+		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
 		{
-			ATargetPoint* Target = *It;
-			if (Target->Tags.Contains("CellPos"))
+			ADFCellBase* Target = *It;
+			if (Target->Tags.Contains("SupplyCell"))
 			{
-				TargetLocation = Target->GetActorLocation();
-				break;
+				Blackboard->SetValueAsVector(BBKEY_SUPPLYPOS, Target->GetActorLocation());
+			}
+			else if (Target->Tags.Contains("TrimCell"))
+			{
+				Blackboard->SetValueAsVector(BBKEY_TRIMPOS, Target->GetActorLocation());
+			}
+			if (Target->Tags.Contains("ColorCell"))
+			{
+				Blackboard->SetValueAsVector(BBKEY_COLORPOS, Target->GetActorLocation());
 			}
 		}
 
 		// 타겟장소 저장
-		Blackboard->SetValueAsVector(BBKEY_CELLPOS, TargetLocation);
+		//Blackboard->SetValueAsVector(BBKEY_CELLPOS, TargetLocation);
 
 		bool RunResult = RunBehaviorTree(BTAsset);
 		ensure(RunResult);
-
 
 	}
 }
@@ -70,4 +74,11 @@ void ADFAIController::OnPossess(APawn* InPawn)
 
 	UE_LOG(LogTemp, Log, TEXT("DFAIController : 저 빙의 했어요"));
 	RunAI();
+}
+
+void ADFAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+
 }
