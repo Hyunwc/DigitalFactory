@@ -12,6 +12,7 @@ class USceneComponent;
 class UStaticMeshComponent;
 class ATargetPoint;
 class UAbilitySystemComponent;
+class UGameplayAbility;
 class ADFAGV;
 
 // 셀에서 작업이 완료되었음을 알리는 델리게이트 
@@ -30,6 +31,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 public:
@@ -43,7 +45,7 @@ public:
 
 	// AGV가 도달할 타겟
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target")
-	ATargetPoint* AGVTargetPoint;
+	USceneComponent* AGVTargetPoint;
 
 	// 어빌리티시스템 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
@@ -69,4 +71,8 @@ public:
 	// AGV에게 작업 시작을 요청받을 함수
 	UFUNCTION(BlueprintCallable)
 	virtual void StartWork(ADFAGV* TargetAGV);
+
+	// 셀의 작업 어빌리티 클래스
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
+	TSubclassOf<UGameplayAbility> CellWorkAbilityClass;
 };

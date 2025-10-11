@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/TargetPoint.h"
 #include "AbilitySystemComponent.h"
+#include "Abilities/GameplayAbility.h"
 #include "Robot/DFAGV.h"
 
 ADFCellBase::ADFCellBase()
@@ -18,7 +19,8 @@ ADFCellBase::ADFCellBase()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	AGVTargetPoint = CreateDefaultSubobject<ATargetPoint>(TEXT("Target"));
+	AGVTargetPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Target"));
+	AGVTargetPoint->SetupAttachment(Root);
 
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
 }

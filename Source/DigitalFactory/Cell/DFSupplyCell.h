@@ -14,4 +14,9 @@ class DIGITALFACTORY_API ADFSupplyCell : public ADFCellBase
 {
 	GENERATED_BODY()
 	
+public:
+	ADFSupplyCell();
+
+protected:
+	virtual void StartWork(ADFAGV* TargetAGV) override;
 };

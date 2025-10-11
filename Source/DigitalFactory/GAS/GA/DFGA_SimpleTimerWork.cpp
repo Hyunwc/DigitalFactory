@@ -4,6 +4,7 @@
 #include "GAS/GA/DFGA_SimpleTimerWork.h"
 #include "Cell/DFCellBase.h"
 #include "AbilitySystemComponent.h"
+#include "TimerManager.h" 
 
 UDFGA_SimpleTimerWork::UDFGA_SimpleTimerWork()
 {
@@ -26,12 +27,52 @@ void UDFGA_SimpleTimerWork::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
+
+	// 어빌리티를 발동시킨 셀 액터 참조
+	OwningCell = Cast<ADFCellBase>(ActorInfo->OwnerActor.Get());
+	if (OwningCell && OwningCell->GetAbilitySystemComponent())
+	{
+		// 작업 시작 태그 적용
+		OwningCell->GetAbilitySystemComponent()->RemoveLooseGameplayTags(WorkStartingTagsToRemove);
+		OwningCell->GetAbilitySystemComponent()->AddLooseGameplayTags(WorkStartingTagsToAdd);
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("[%s] Work Started on %s. Will Completre in %f seconds"),
+		*GetName(), *OwningCell->GetName(), WorkDuration);
+
+	// 작업 타이머 시작
+	GetWorld()->GetTimerManager().SetTimer(WorkTimerHandle, this, &UDFGA_SimpleTimerWork::OnWorkCompleted, WorkDuration, false);
 }
 
 void UDFGA_SimpleTimerWork::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	// 이미 종료되었으면 다시 처리 x
+	if (!IsActive())
+	{
+		return;
+	}
+
+	// 작업 종료 태그 적용
+	if (OwningCell && OwningCell->GetAbilitySystemComponent())
+	{
+		// 작업 시작 태그 적용
+		OwningCell->GetAbilitySystemComponent()->RemoveLooseGameplayTags(WorkEndingTagsToRemove);
+		OwningCell->GetAbilitySystemComponent()->AddLooseGameplayTags(WorkEndingTagsToAdd);
+
+		// 작업이 완료되었음을 델리게이트를 통해 알림
+		OwningCell->OnCellWorkComplete.Broadcast(OwningCell);
+	}
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UDFGA_SimpleTimerWork::OnWorkCompleted()
 {
+	UE_LOG(LogTemp, Log, TEXT("[%s] Work Completed On %s!"), *GetName(), *OwningCell->GetName());
+
+	// 타이머 정리
+	GetWorld()->GetTimerManager().ClearTimer(WorkTimerHandle);
+
+	// 작업 완료 후 어빌리티 종료
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }
