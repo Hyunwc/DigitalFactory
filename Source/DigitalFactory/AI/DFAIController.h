@@ -27,9 +27,8 @@ protected:
 
 public:
 	void RunAI();
-	void StopAI();
 
-	void SetNextCell();
+	void StopAI();
 
 private:
 	UPROPERTY()

@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "Cell/DFCellBase.h"
 #include "Engine/TargetPoint.h"
+#include "GameplayTagContainer.h"
 
 ADFAIController::ADFAIController()
 {
@@ -33,29 +34,31 @@ void ADFAIController::RunAI()
 		// 복귀장소 저장
 		Blackboard->SetValueAsVector(BBKEY_HOMEPOS, GetPawn()->GetActorLocation());
 
+		// 다음 작업할 단계 미리 설정
+		Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());
+
+		// 월드에서 보급셀 찾아서 블랙보드에 할당.
+		ADFCellBase* SupplyCell = nullptr;
+		FGameplayTag SupplyCellTag = FGameplayTag::RequestGameplayTag("Cell.Type.Supply");
+
 		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
 		{
-			ADFCellBase* Target = *It;
-			if (Target->Tags.Contains("SupplyCell"))
+			ADFCellBase* CurrentCell = *It;
+			if (CurrentCell->GetCellTypeTag().HasTag(SupplyCellTag))
 			{
-				Blackboard->SetValueAsVector(BBKEY_SUPPLYPOS, Target->GetActorLocation());
-			}
-			else if (Target->Tags.Contains("TrimCell"))
-			{
-				Blackboard->SetValueAsVector(BBKEY_TRIMPOS, Target->GetActorLocation());
-			}
-			if (Target->Tags.Contains("ColorCell"))
-			{
-				Blackboard->SetValueAsVector(BBKEY_COLORPOS, Target->GetActorLocation());
+				SupplyCell = CurrentCell;
+				break;
 			}
 		}
-
-		// 타겟장소 저장
-		//Blackboard->SetValueAsVector(BBKEY_CELLPOS, TargetLocation);
+		
+		if (SupplyCell)
+		{
+			Blackboard->SetValueAsObject(BBKEY_TARGETCELL, SupplyCell);
+			UE_LOG(LogTemp, Log, TEXT("DFAICon : 보급셀 찾아서 넣기 성공!"));
+		}
 
 		bool RunResult = RunBehaviorTree(BTAsset);
 		ensure(RunResult);
-
 	}
 }
 
@@ -79,6 +82,5 @@ void ADFAIController::OnPossess(APawn* InPawn)
 void ADFAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
 
 }

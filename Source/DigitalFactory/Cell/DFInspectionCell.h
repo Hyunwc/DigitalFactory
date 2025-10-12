@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -14,4 +14,9 @@ class DIGITALFACTORY_API ADFInspectionCell : public ADFCellBase
 {
 	GENERATED_BODY()
 	
+public:
+	ADFInspectionCell();
+
+protected:
+	virtual void StartWork(ADFAGV* TargetAGV) override;
 };

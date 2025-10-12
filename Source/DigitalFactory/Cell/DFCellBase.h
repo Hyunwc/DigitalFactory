@@ -53,7 +53,11 @@ public:
 
 	// 이 셀의 상태를 나타낼 태그
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
-	FGameplayTagContainer CellTag;
+	FGameplayTagContainer CellStateTag;
+
+	// 이 셀이 어떤 타입인지 나타낼 태그
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
+	FGameplayTagContainer CellTypeTag;
 
 	// 현재 셀에 예약된 AGV를 추척하기 위한 변수
 	UPROPERTY(VisibleAnywhere)
@@ -75,4 +79,7 @@ public:
 	// 셀의 작업 어빌리티 클래스
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TSubclassOf<UGameplayAbility> CellWorkAbilityClass;
+
+	UFUNCTION()
+	FGameplayTagContainer GetCellTypeTag() const { return CellTypeTag; }
 };

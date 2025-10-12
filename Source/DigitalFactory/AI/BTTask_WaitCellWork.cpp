@@ -2,28 +2,63 @@
 
 
 #include "AI/BTTask_WaitCellWork.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Cell/DFCellBase.h"
+#include "DFAI.h"
 
 UBTTask_WaitCellWork::UBTTask_WaitCellWork()
 {
-	bNotifyTick = true;
-	WaitDuration = 3.0f; // 작업 시간
+	NodeName = TEXT("Wait For Cell Work");
+	bNotifyTaskFinished = true; // Task가 종료될 때 OnTaskFinished가 호출되도록 설정
+	TargetCellKeyName = BBKEY_TARGETCELL;
 }
 
 EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	// 작업 시작 시 경과시간 초기화
-	ElapsedTime = 0.0f;
+	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+	if (!BlackboardComp)
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	OwnerCompRef = &OwnerComp;
+
+	CurrentWorkingCell = Cast<ADFCellBase>(BlackboardComp->GetValueAsObject(TargetCellKeyName));
+
+	if (!CurrentWorkingCell)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BTTask_WaitCell : No Target!"));
+		return EBTNodeResult::Failed;
+	}
+
+	// 셀의 작업 완료 델리게이트 함수 바인딩
+	CurrentWorkingCell->OnCellWorkComplete.AddDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
+
 	return EBTNodeResult::InProgress;
 }
 
-void UBTTask_WaitCellWork::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTask_WaitCellWork::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
-	ElapsedTime += DeltaSeconds;
-
-	if (ElapsedTime >= WaitDuration)
+	// Task가 종료될 때 델리게이트 바인딩 해제
+	if (CurrentWorkingCell)
 	{
-		UE_LOG(LogTemp, Log, TEXT("작업 완료! 다음 셀로 가볼까?"));
+		CurrentWorkingCell->OnCellWorkComplete.RemoveDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
 
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		// 참조 해제
+		CurrentWorkingCell = nullptr;
+
+		Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 	}
 }
+
+void UBTTask_WaitCellWork::OnCellWorkCompleted(ADFCellBase* CompletedCell)
+{
+	// 현재 이 Task가 기다리던 셀의 작업이 완료되었는지 확인
+	if (CurrentWorkingCell && CompletedCell == CurrentWorkingCell)
+	{
+		FinishLatentTask(*OwnerCompRef, EBTNodeResult::Succeeded);
+	}
+}
+
+

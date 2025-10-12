@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Cell/DFSupplyCell.h"
@@ -14,7 +14,7 @@ void ADFSupplyCell::StartWork(ADFAGV* TargetAGV)
 {
 	Super::StartWork(TargetAGV);
 
-	// ¾îºô¸®Æ¼ È°¼ºÈ­
+	// ì–´ë¹Œë¦¬í‹° í™œì„±í™”
 	if (ASC && CellWorkAbilityClass)
 	{
 		FGameplayAbilitySpecHandle AbilityHandle = ASC->GiveAbility(
