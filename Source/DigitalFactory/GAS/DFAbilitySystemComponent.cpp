@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "GAS/DFAbilitySystemComponent.h"
@@ -24,12 +24,12 @@ bool UDFAbilitySystemComponent::SetCellState(FGameplayTag NewStateTag)
 		return false;
 	}
 	
-	// ÇöÀç Á¸ÀçÇÏ´Â ÅÂ±× ¸ğµÎ Á¦°Å
+	// í˜„ì¬ ì¡´ì¬í•˜ëŠ” íƒœê·¸ ëª¨ë‘ ì œê±°
 	RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
 	RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
 	RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
 
-	// »õ·Î¿î »óÅÂ Ãß°¡
+	// ìƒˆë¡œìš´ ìƒíƒœ ì¶”ê°€
 	AddLooseGameplayTag(NewStateTag);
 
 	OnCellStateChanged.Broadcast(NewStateTag);

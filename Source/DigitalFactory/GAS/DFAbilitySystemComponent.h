@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -27,18 +27,18 @@ public:
 	FOnCellStateChanged OnCellStateChanged;
 
 public:
-	// Æ¯Á¤ »óÅÂ ÅÂ±×¸¦ °¡Áö°í ÀÖ´ÂÁö È®ÀÎ
+	// íŠ¹ì • ìƒíƒœ íƒœê·¸ë¥¼ ê°€ì§€ê³  ìˆëŠ”ì§€ í™•ì¸
 	UFUNCTION(BlueprintCallable)
 	bool HasCellState(FGameplayTag StateTag) const;
 
-	// ¼¿ »óÅÂ¸¦ º¯°æ. ¹İÈ¯°ªÀº ¼º°ø ¿©ºÎ¸¦
+	// ì…€ ìƒíƒœë¥¼ ë³€ê²½. ë°˜í™˜ê°’ì€ ì„±ê³µ ì—¬ë¶€ë¥¼
 	UFUNCTION(BlueprintCallable)
 	bool SetCellState(FGameplayTag NewStateTag);
 	
 	UFUNCTION(BlueprintCallable)
 	void AddInitialCellStateTags(const FGameplayTagContainer& InitialTags);
 
-	// ÇöÀç ¼¿ »óÅÂ ¹İÈ¯
+	// í˜„ì¬ ì…€ ìƒíƒœ ë°˜í™˜
 	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetCurrentCellStateTag() const;
 };
