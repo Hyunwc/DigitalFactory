@@ -12,6 +12,7 @@ class USceneComponent;
 class UStaticMeshComponent;
 class ATargetPoint;
 class UAbilitySystemComponent;
+class UDFAbilitySystemComponent;
 class UGameplayAbility;
 class ADFAGV;
 
@@ -34,6 +35,8 @@ protected:
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UFUNCTION(BlueprintCallable, Category = "GAS")
+	UDFAbilitySystemComponent* GetDFAbilitySystemComponent() const;
 public:
 	// 루트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -51,13 +54,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	UAbilitySystemComponent* ASC;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	UDFAbilitySystemComponent* DFASC;
+
 	// 이 셀의 상태를 나타낼 태그
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
-	FGameplayTagContainer CellStateTag;
+	FGameplayTagContainer InitialCellStateTags;
 
 	// 이 셀이 어떤 타입인지 나타낼 태그
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
-	FGameplayTagContainer CellTypeTag;
+	FGameplayTag CellTypeTag;
 
 	// 현재 셀에 예약된 AGV를 추척하기 위한 변수
 	UPROPERTY(VisibleAnywhere)
@@ -81,5 +87,5 @@ public:
 	TSubclassOf<UGameplayAbility> CellWorkAbilityClass;
 
 	UFUNCTION()
-	FGameplayTagContainer GetCellTypeTag() const { return CellTypeTag; }
+	FGameplayTag GetCellTypeTag() const { return CellTypeTag; }
 };

@@ -3,7 +3,7 @@
 
 #include "Cell/DFInspectionCell.h"
 #include "GAS/GA/DFGA_SimpleTimerWork.h"
-#include "AbilitySystemComponent.h"
+#include "GAS/DFAbilitySystemComponent.h"
 
 ADFInspectionCell::ADFInspectionCell()
 {
@@ -15,15 +15,15 @@ void ADFInspectionCell::StartWork(ADFAGV* TargetAGV)
 	Super::StartWork(TargetAGV);
 
 	// 어빌리티 활성화
-	if (ASC && CellWorkAbilityClass)
+	if (DFASC && CellWorkAbilityClass)
 	{
-		FGameplayAbilitySpecHandle AbilityHandle = ASC->GiveAbility(
+		FGameplayAbilitySpecHandle AbilityHandle = DFASC->GiveAbility(
 			FGameplayAbilitySpec(CellWorkAbilityClass, 1, 0, this)
 		);
 
 		if (AbilityHandle.IsValid())
 		{
-			ASC->TryActivateAbility(AbilityHandle);
+			DFASC->TryActivateAbility(AbilityHandle);
 		}
 		else
 		{

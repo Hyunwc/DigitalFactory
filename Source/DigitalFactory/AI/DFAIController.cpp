@@ -44,7 +44,7 @@ void ADFAIController::RunAI()
 		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
 		{
 			ADFCellBase* CurrentCell = *It;
-			if (CurrentCell->GetCellTypeTag().HasTag(SupplyCellTag))
+			if (CurrentCell->GetCellTypeTag() == SupplyCellTag)
 			{
 				SupplyCell = CurrentCell;
 				break;

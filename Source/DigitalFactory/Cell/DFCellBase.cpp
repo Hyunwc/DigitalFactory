@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "Robot/DFAGV.h"
+#include "GAS/DFAbilitySystemComponent.h"
 
 ADFCellBase::ADFCellBase()
 {
@@ -23,21 +24,35 @@ ADFCellBase::ADFCellBase()
 	AGVTargetPoint->SetupAttachment(Root);
 
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+
+	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFS"));
 }
 
 void ADFCellBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ASC)
+	//if (ASC)
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("Cell : ASC 잘 부착되었습니다"));
+	//}
+
+	if (DFASC)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Cell : ASC 잘 부착되었습니다"));
+		DFASC->InitAbilityActorInfo(this, this);
+
+		DFASC->AddInitialCellStateTags(InitialCellStateTags);
 	}
 }
 
 UAbilitySystemComponent* ADFCellBase::GetAbilitySystemComponent() const
 {
 	return ASC;
+}
+
+UDFAbilitySystemComponent* ADFCellBase::GetDFAbilitySystemComponent() const
+{
+	return DFASC;
 }
 
 void ADFCellBase::StartWork(ADFAGV* TargetAGV)

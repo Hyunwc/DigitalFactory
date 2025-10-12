@@ -3,7 +3,7 @@
 
 #include "GAS/GA/DFGA_SimpleTimerWork.h"
 #include "Cell/DFCellBase.h"
-#include "AbilitySystemComponent.h"
+#include "GAS/DFAbilitySystemComponent.h"
 #include "TimerManager.h" 
 
 UDFGA_SimpleTimerWork::UDFGA_SimpleTimerWork()
@@ -30,11 +30,11 @@ void UDFGA_SimpleTimerWork::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	// 어빌리티를 발동시킨 셀 액터 참조
 	OwningCell = Cast<ADFCellBase>(ActorInfo->OwnerActor.Get());
-	if (OwningCell && OwningCell->GetAbilitySystemComponent())
+	if (OwningCell && OwningCell->GetDFAbilitySystemComponent())
 	{
 		// 작업 시작 태그 적용
-		OwningCell->GetAbilitySystemComponent()->RemoveLooseGameplayTags(WorkStartingTagsToRemove);
-		OwningCell->GetAbilitySystemComponent()->AddLooseGameplayTags(WorkStartingTagsToAdd);
+		OwningCell->GetDFAbilitySystemComponent()->RemoveLooseGameplayTags(WorkStartingTagsToRemove);
+		OwningCell->GetDFAbilitySystemComponent()->AddLooseGameplayTags(WorkStartingTagsToAdd);
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("[%s] Work Started on %s. Will Completre in %f seconds"),
@@ -53,11 +53,11 @@ void UDFGA_SimpleTimerWork::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	}
 
 	// 작업 종료 태그 적용
-	if (OwningCell && OwningCell->GetAbilitySystemComponent())
+	if (OwningCell && OwningCell->GetDFAbilitySystemComponent())
 	{
 		// 작업 시작 태그 적용
-		OwningCell->GetAbilitySystemComponent()->RemoveLooseGameplayTags(WorkEndingTagsToRemove);
-		OwningCell->GetAbilitySystemComponent()->AddLooseGameplayTags(WorkEndingTagsToAdd);
+		OwningCell->GetDFAbilitySystemComponent()->RemoveLooseGameplayTags(WorkEndingTagsToRemove);
+		OwningCell->GetDFAbilitySystemComponent()->AddLooseGameplayTags(WorkEndingTagsToAdd);
 
 		// 작업이 완료되었음을 델리게이트를 통해 알림
 		OwningCell->OnCellWorkComplete.Broadcast(OwningCell);

@@ -7,7 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
 #include "EngineUtils.h"
-#include "AbilitySystemComponent.h"
+#include "GAS/DFAbilitySystemComponent.h"
 
 
 UBTService_FindNextTargetCell::UBTService_FindNextTargetCell()
@@ -84,31 +84,20 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 
 	if (IsValid(PrevPendingCell))
 	{
-		//UE_LOG(LogTemp, Log, TEXT("BTService : 너의 정체는 뭐니? %s"), *PrevPendingCell->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("BTService : 이친구를 읽어올수가 없어요~"));
-	}
-
-	if (PrevPendingCell)
-	{
-		if (PrevPendingCell->CellTypeTag.HasTag(RequiredCellTypeTag))
+		if (PrevPendingCell->CellTypeTag.MatchesTag(RequiredCellTypeTag))
 		{
-			//UE_LOG(LogTemp, Log, TEXT("BTService : 오우 태그가 일치해요!!"));
-			UAbilitySystemComponent* PrevASC = PrevPendingCell->GetAbilitySystemComponent();
-
-			if (PrevASC &&
-				PrevASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
-				!PrevASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
+			if(IsValid(PrevPendingCell->GetDFAbilitySystemComponent()) &&
+				PrevPendingCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
+					!PrevPendingCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
 			{
 				BestCell = PrevPendingCell;
+				GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Cyan, *BestCell->GetName());
 				UE_LOG(LogTemp, Log, TEXT("BTService : BestCell 이름 %s"), *BestCell->GetName());
-
 			}
 			else
 			{
-				if (PrevASC && PrevASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending")))
+				if (IsValid(PrevPendingCell->GetDFAbilitySystemComponent())
+					&& PrevPendingCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")))
 				{
 					SetCellFree(PrevPendingCell);
 				}
@@ -122,22 +111,25 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
 		{
 			ADFCellBase* CurrentCell = *It;
-			if (CurrentCell && CurrentCell->GetAbilitySystemComponent())
+			if (CurrentCell && CurrentCell->GetDFAbilitySystemComponent())
 			{
-				UAbilitySystemComponent* CellASC = CurrentCell->GetAbilitySystemComponent();
+				UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
 
-				if (CellASC->HasMatchingGameplayTag(RequiredCellTypeTag) &&
-					CellASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free")) &&
-					!CellASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
-					!CellASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
+				if (CurrentCell->CellTypeTag.MatchesTag(RequiredCellTypeTag) &&
+					CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")) &&
+					!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
+					!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
 				{
-					float DistanceSq = FVector::DistSquared(OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation(),
-						CurrentCell->AGVTargetPoint->GetComponentLocation());
-
-					if (DistanceSq < ClosestDistance)
+					if (CurrentCell->AGVTargetPoint)
 					{
-						ClosestDistance = DistanceSq;
-						BestCell = CurrentCell;
+						float DistanceSq = FVector::DistSquared(OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation(),
+							CurrentCell->AGVTargetPoint->GetComponentLocation());
+
+						if (DistanceSq < ClosestDistance)
+						{
+							ClosestDistance = DistanceSq;
+							BestCell = CurrentCell;
+						}
 					}
 				}
 			}
@@ -185,12 +177,10 @@ FGameplayTag UBTService_FindNextTargetCell::GetCellTypeTagsForPhase(const FGamep
 
 void UBTService_FindNextTargetCell::SetCellFree(ADFCellBase* CellToFree) const
 {
-	if (CellToFree && CellToFree->GetAbilitySystemComponent())
+	if (CellToFree && CellToFree->GetDFAbilitySystemComponent())
 	{
-		UAbilitySystemComponent* CellASC = CellToFree->GetAbilitySystemComponent();
+		UDFAbilitySystemComponent* CellASC = CellToFree->GetDFAbilitySystemComponent();
 		// 예약해제
-		CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
-		CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
-		CellASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+		CellASC->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
 	}
 }
