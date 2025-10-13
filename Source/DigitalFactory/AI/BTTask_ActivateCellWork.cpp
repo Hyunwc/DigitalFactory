@@ -8,6 +8,7 @@
 #include "DFAI.h"
 #include "Robot/DFAGV.h"
 #include "AIController.h"
+#include "GAS/DFAbilitySystemComponent.h"
 
 UBTTask_ActivateCellWork::UBTTask_ActivateCellWork()
 {
@@ -28,12 +29,17 @@ EBTNodeResult::Type UBTTask_ActivateCellWork::ExecuteTask(UBehaviorTreeComponent
 
 	if (!TargetCell)
 	{
-		UE_LOG(LogTemp, Error, TEXT("BTTask_Activate : No Target Cell Found %s"), *TargetCellKeyName.ToString());
+		//UE_LOG(LogTemp, Error, TEXT("BTTask_Activate : No Target Cell Found %s"), *TargetCellKeyName.ToString());
 		return EBTNodeResult::Failed;
 	}
 
 	// 셀의 작업 시작 호출
 	TargetCell->StartWork(Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn()));
+	// Working으로 변경
+	if (TargetCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
+	{
+		UE_LOG(LogTemp, Log, TEXT("BTTask_Activate : 셀 Working으로 변경!"));
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("BTTask_Activate : 일 시작하세요! cell %s!"), *TargetCell->GetName());
 

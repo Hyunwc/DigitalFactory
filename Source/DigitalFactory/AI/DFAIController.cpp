@@ -9,6 +9,7 @@
 #include "Cell/DFCellBase.h"
 #include "Engine/TargetPoint.h"
 #include "GameplayTagContainer.h"
+#include "GAS/DFAbilitySystemComponent.h"
 
 ADFAIController::ADFAIController()
 {
@@ -37,24 +38,14 @@ void ADFAIController::RunAI()
 		// 다음 작업할 단계 미리 설정
 		Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());
 
-		// 월드에서 보급셀 찾아서 블랙보드에 할당.
-		ADFCellBase* SupplyCell = nullptr;
-		FGameplayTag SupplyCellTag = FGameplayTag::RequestGameplayTag("Cell.Type.Supply");
-
+		// 월드에 모든 Cell Free 상태로
 		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
 		{
 			ADFCellBase* CurrentCell = *It;
-			if (CurrentCell->GetCellTypeTag() == SupplyCellTag)
+			if (IsValid(CurrentCell->GetDFAbilitySystemComponent()))
 			{
-				SupplyCell = CurrentCell;
-				break;
+				CurrentCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
 			}
-		}
-		
-		if (SupplyCell)
-		{
-			Blackboard->SetValueAsObject(BBKEY_TARGETCELL, SupplyCell);
-			UE_LOG(LogTemp, Log, TEXT("DFAICon : 보급셀 찾아서 넣기 성공!"));
 		}
 
 		bool RunResult = RunBehaviorTree(BTAsset);
