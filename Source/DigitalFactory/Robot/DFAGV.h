@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GameplayTagContainer.h"
 #include "DFAGV.generated.h"
 
 class USceneComponent;
 class UStaticMeshComponent;
 class UFloatingPawnMovement;
+class UDFAbilitySystemComponent;
+class UGameplayAbility;
 
 UCLASS()
 class DIGITALFACTORY_API ADFAGV : public APawn
@@ -26,6 +29,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual UDFAbilitySystemComponent* GetDFAbilitySystemComponent() const;
+
 public:
 	// AGV의 루트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -39,4 +44,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	UFloatingPawnMovement* Movement;
 
+	// DF ASC
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	UDFAbilitySystemComponent* DFASC;
+
+	// 어빌리티 클래스
+	// TODO : 어빌리티가 늘어날 경우 컨테이너를 통해 관리하는 것으로 수정
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
+	//TSubclassOf<UGameplayAbility> Abilities;
+	//
+	//// AGV의 Phase를 나타내는 태그
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS | Phase")
+	//FGameplayTag AGVPhaseTag;
 };

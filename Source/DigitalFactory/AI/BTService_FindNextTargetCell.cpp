@@ -14,8 +14,8 @@ UBTService_FindNextTargetCell::UBTService_FindNextTargetCell()
 {
 	NodeName = TEXT("Find Next Target Cell");
 	// Tick 주기 설정
-	Interval = 0.5f;
-	RandomDeviation = 0.1f;
+	Interval = 2.0f;
+	//RandomDeviation = 0.1f;
 
 	// 블랙보드 키의 기본값 설정
 	//CurrentAGVPhaseKey.AddNameFilter(this, GET_MEMBER_NAME_CHECKED(UBTService_FindNextTargetCell, CurrentAGVPhaseKey));
@@ -66,6 +66,7 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	//}
 	//else if(CurrentAGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Idle")))
 
+	// 셀 Type 검출
 	FGameplayTag RequiredCellTypeTag = GetCellTypeTagsForPhase(CurrentAGVPhaseTag);
 	if (!RequiredCellTypeTag.IsValid())
 	{
@@ -73,10 +74,9 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("BTService : Require의 태그는 %s입니다"), *RequiredCellTypeTag.GetTagName().ToString());
+	//UE_LOG(LogTemp, Log, TEXT("BTService : Require의 태그는 %s입니다"), *RequiredCellTypeTag.GetTagName().ToString());
 
 	ADFCellBase* BestCell = nullptr;
-	float ClosestDistance = TNumericLimits<float>::Max();
 
 	// 이전 예약 셀이 유효한지 확인하고 계속 목표로 삼을지 결정
 	ADFCellBase* PrevPendingCell = Cast<ADFCellBase>(BlackboardComp->GetValueAsObject(CurrentTargetCellKey));
@@ -84,8 +84,10 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 
 	if (IsValid(PrevPendingCell))
 	{
+		UE_LOG(LogTemp, Log, TEXT("BTService : PrevPending은 유효해!"));
 		if (PrevPendingCell->CellTypeTag.MatchesTag(RequiredCellTypeTag))
 		{
+			UE_LOG(LogTemp, Log, TEXT("BTService : PrevPending의 태그는 %s"), *PrevPendingCell->GetDFAbilitySystemComponent()->GetCurrentCellStateTag().GetTagName().ToString());
 			if(IsValid(PrevPendingCell->GetDFAbilitySystemComponent()) &&
 				PrevPendingCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
 					!PrevPendingCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
@@ -96,6 +98,7 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 			}
 			else
 			{
+				UE_LOG(LogTemp, Log, TEXT("BTService : BestCell를 못찾겠어요"));
 				if (IsValid(PrevPendingCell->GetDFAbilitySystemComponent())
 					&& PrevPendingCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")))
 				{
@@ -104,7 +107,6 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 			}
 		}
 	}
-	
 	
 	if(!BestCell)
 	{
@@ -120,24 +122,16 @@ void UBTService_FindNextTargetCell::TickNode(UBehaviorTreeComponent& OwnerComp, 
 					!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
 					!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
 				{
-					if (CurrentCell->AGVTargetPoint)
-					{
-						float DistanceSq = FVector::DistSquared(OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation(),
-							CurrentCell->AGVTargetPoint->GetComponentLocation());
-
-						if (DistanceSq < ClosestDistance)
-						{
-							ClosestDistance = DistanceSq;
-							BestCell = CurrentCell;
-						}
-					}
+					BestCell = CurrentCell;
+					UE_LOG(LogTemp, Log, TEXT("BTService : 새로운 베스트를 찾았다! 그 이름은 %s"), *BestCell->GetName());
+					break;
 				}
 			}
 		}
 
 		if (BestCell)
 		{
-			UAbilitySystemComponent* BestCellASC = BestCell->GetAbilitySystemComponent();
+			UDFAbilitySystemComponent* BestCellASC = BestCell->GetDFAbilitySystemComponent();
 			if (BestCellASC && BestCellASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free")))
 			{
 				BestCellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));

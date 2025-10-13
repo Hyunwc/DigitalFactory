@@ -37,6 +37,8 @@ void UDFGA_SimpleTimerWork::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		OwningCell->GetDFAbilitySystemComponent()->AddLooseGameplayTags(WorkStartingTagsToAdd);
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("%s : 일 시작할게요~"), *OwningCell->GetName());
+
 	UE_LOG(LogTemp, Log, TEXT("[%s] Work Started on %s. Will Completre in %f seconds"),
 		*GetName(), *OwningCell->GetName(), WorkDuration);
 
