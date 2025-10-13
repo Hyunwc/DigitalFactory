@@ -53,7 +53,7 @@ public:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	//TSubclassOf<UGameplayAbility> Abilities;
 	//
-	//// AGV의 Phase를 나타내는 태그
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS | Phase")
-	//FGameplayTag AGVPhaseTag;
+	// AGV의 Phase를 나타내는 태그
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS | Phase")
+	FGameplayTag AGVPhaseTag;
 };

@@ -36,7 +36,7 @@ void ADFAIController::RunAI()
 		Blackboard->SetValueAsVector(BBKEY_HOMEPOS, GetPawn()->GetActorLocation());
 
 		// 다음 작업할 단계 미리 설정
-		Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());
+		//Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());
 
 		// 월드에 모든 Cell Free 상태로
 		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
@@ -67,7 +67,7 @@ void ADFAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	UE_LOG(LogTemp, Log, TEXT("DFAIController : 저 빙의 했어요"));
-	RunAI();
+	//RunAI();
 }
 
 void ADFAIController::BeginPlay()
