@@ -27,6 +27,8 @@ ADFAGV::ADFAGV()
 	Movement->MaxSpeed = 400.0f;
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
+
+	AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Idle"));
 }
 
 void ADFAGV::BeginPlay()

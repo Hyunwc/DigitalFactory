@@ -4,6 +4,8 @@
 #include "AI/BTTask_SetAGVPhase.h"
 #include "DFAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Robot/DFAGV.h"
+#include "AIController.h"
 
 UBTTask_SetAGVPhase::UBTTask_SetAGVPhase()
 {
@@ -20,7 +22,10 @@ EBTNodeResult::Type UBTTask_SetAGVPhase::ExecuteTask(UBehaviorTreeComponent& Own
 	}
 
 	// 블랙보드의 AGV Phase 키 값을 새로운 Phase 태그 이름으로 업데이트
-	BlackboardComp->SetValueAsName(AGVPhaseKeyName, NewAGVPhaseTagName);
+	//BlackboardComp->SetValueAsName(AGVPhaseKeyName, NewAGVPhaseTagName);
+
+	ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+	AGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(NewAGVPhaseTagName);
 
 	return EBTNodeResult::Succeeded;
 }

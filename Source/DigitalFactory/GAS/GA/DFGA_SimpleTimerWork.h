@@ -33,18 +33,18 @@ public:
 	FTimerHandle WorkTimerHandle;
 
 	// 어빌리티 활성화 시 셀의 상태 태그 변경
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
-	FGameplayTagContainer WorkStartingTagsToAdd; // 작업 시작 시 부여할 태그 (Cell.State.Working)
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
-	FGameplayTagContainer WorkStartingTagsToRemove; // 작업 시작 시 제거할 태그 (Cell.State.Free, Pending)
-
-	// 어빌리티 종료 시 셀의 상태 태그 변경
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
-	FGameplayTagContainer WorkEndingTagsToAdd; // 작업 종료 시 부여할 태그 (Cell.State.Free)
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
-	FGameplayTagContainer WorkEndingTagsToRemove; // 작업 종료 시 제거할 태그 (Cell.State.Working)
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
+	//FGameplayTagContainer WorkStartingTagsToAdd; // 작업 시작 시 부여할 태그 (Cell.State.Working)
+	//
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
+	//FGameplayTagContainer WorkStartingTagsToRemove; // 작업 시작 시 제거할 태그 (Cell.State.Free, Pending)
+	//
+	//// 어빌리티 종료 시 셀의 상태 태그 변경
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
+	//FGameplayTagContainer WorkEndingTagsToAdd; // 작업 종료 시 부여할 태그 (Cell.State.Free)
+	//
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Work")
+	//FGameplayTagContainer WorkEndingTagsToRemove; // 작업 종료 시 제거할 태그 (Cell.State.Working)
 
 	// 어빌리티가 발동된 셀 참조 (작업 완료 후 셀에게 알리기 위함)
 	UPROPERTY()

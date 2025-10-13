@@ -22,28 +22,23 @@ UBTTask_FindNextCell::UBTTask_FindNextCell()
 
 EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	//ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
-	AAIController* AGVAICon = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 
 	if (!BlackboardComp)
 	{
-		UE_LOG(LogTemp, Error, TEXT("BTTask_Find : 블랙보드를 가져오질 못해서 작업 종료할게!"));
 		return EBTNodeResult::Failed;
 	}
 
-	// AGV의 현재 작업 단계(AGV.Phase)를 블랙보드에서 가져온다.
-	FGameplayTag CurrentAGVPhaseTag = FGameplayTag::RequestGameplayTag(BlackboardComp->GetValueAsName(CurrentAGVPhaseKey));
-	if (!CurrentAGVPhaseTag.IsValid())
+	// 만약 Idle이면
+	ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+	if (AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Idle"))))
 	{
-		UE_LOG(LogTemp, Error, TEXT("BTTask_Find : 태그를 못찾았어!"));
-		return EBTNodeResult::Failed;
+		// Supply로 변경
+		AGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply"));
 	}
-
 	// AGV가 가야할 셀 타입 검출
-	FGameplayTag CellTypeTag = GetCellTypeTagsForPhase(CurrentAGVPhaseTag);
+	FGameplayTag CellTypeTag = GetCellTypeTagsForPhase(AGV->AGVPhaseTag);
 
-	UE_LOG(LogTemp, Log, TEXT("BTTask_Find : 검출 셀 태그 이름 %s"), *CellTypeTag.GetTagName().ToString());
 	ADFCellBase* MoveToCell = nullptr;
 
 	// 탐색
@@ -53,15 +48,12 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		// 검출한 셀 타입과 탐색한 셀 타입이 일치하는지 체크(Cell.Type)
 		if (CurrentCell->CellTypeTag.MatchesTag(CellTypeTag))
 		{
-			UE_LOG(LogTemp, Log, TEXT("BTTask_Find : 여기 들어오니!"));
 			UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
-			UE_LOG(LogTemp, Log, TEXT("BTTask_Find : 이셀 무슨 타입이야? %s"), *CellASC->GetCurrentCellStateTag().ToString());
 			if (CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")) &&
 				!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
 				!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
 			{
 				// 하나만 찾으면 된다.
-				UE_LOG(LogTemp, Log, TEXT("BTTask_Find : 여기 들어오니?!"));
 				MoveToCell = CurrentCell;
 				break;
 			}
@@ -75,8 +67,8 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		UDFAbilitySystemComponent* CellASC = MoveToCell->GetDFAbilitySystemComponent();
 		if (CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")))
 		{
-			CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-			CellASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
+			//CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+			CellASC->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
 		}
 
 		// 블랙보드 Next좌표와 참조 셀 갱신

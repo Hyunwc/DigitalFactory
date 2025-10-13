@@ -11,12 +11,12 @@ UDFGA_SimpleTimerWork::UDFGA_SimpleTimerWork()
 	WorkDuration = 3.0f;
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor; // 액터당 인스턴스 하나
 
-	WorkStartingTagsToAdd.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
-	WorkStartingTagsToRemove.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-	WorkStartingTagsToRemove.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
-
-	WorkEndingTagsToAdd.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-	WorkEndingTagsToRemove.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
+	//WorkStartingTagsToAdd.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
+	//WorkStartingTagsToRemove.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+	//WorkStartingTagsToRemove.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
+	//
+	//WorkEndingTagsToAdd.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+	//WorkEndingTagsToRemove.AddTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
 }
 
 void UDFGA_SimpleTimerWork::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -33,8 +33,7 @@ void UDFGA_SimpleTimerWork::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if (OwningCell && OwningCell->GetDFAbilitySystemComponent())
 	{
 		// 작업 시작 태그 적용
-		OwningCell->GetDFAbilitySystemComponent()->RemoveLooseGameplayTags(WorkStartingTagsToRemove);
-		OwningCell->GetDFAbilitySystemComponent()->AddLooseGameplayTags(WorkStartingTagsToAdd);
+		OwningCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("%s : 일 시작할게요~"), *OwningCell->GetName());
@@ -57,9 +56,7 @@ void UDFGA_SimpleTimerWork::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	// 작업 종료 태그 적용
 	if (OwningCell && OwningCell->GetDFAbilitySystemComponent())
 	{
-		// 작업 시작 태그 적용
-		OwningCell->GetDFAbilitySystemComponent()->RemoveLooseGameplayTags(WorkEndingTagsToRemove);
-		OwningCell->GetDFAbilitySystemComponent()->AddLooseGameplayTags(WorkEndingTagsToAdd);
+		OwningCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
 
 		// 작업이 완료되었음을 델리게이트를 통해 알림
 		OwningCell->OnCellWorkComplete.Broadcast(OwningCell);
