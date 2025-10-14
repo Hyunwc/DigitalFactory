@@ -8,6 +8,8 @@
 ADFSupplyCell::ADFSupplyCell()
 {
 	CellWorkAbilityClass = UDFGA_SimpleTimerWork::StaticClass();
+	SpawnComp = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnComp"));
+	SpawnComp->SetupAttachment(Root);
 }
 
 void ADFSupplyCell::StartWork(ADFAGV* TargetAGV)

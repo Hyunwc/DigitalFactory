@@ -70,7 +70,7 @@ public:
 	ADFAGV* ReservedAGV;
 
 	// 현재 이 셀에서 작업중인 AGV
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	ADFAGV* WorkingAGV;
 
 	// 이 셀의 작업이 완료됐음을 알릴 델리게이트
@@ -83,7 +83,7 @@ public:
 	virtual void StartWork(ADFAGV* TargetAGV);
 
 	// 셀의 작업 어빌리티 클래스
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
 	TSubclassOf<UGameplayAbility> CellWorkAbilityClass;
 
 	UFUNCTION()
