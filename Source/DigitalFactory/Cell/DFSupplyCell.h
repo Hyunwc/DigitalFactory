@@ -19,4 +19,8 @@ public:
 
 protected:
 	virtual void StartWork(ADFAGV* TargetAGV) override;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
+	USceneComponent* SpawnComp;
 };

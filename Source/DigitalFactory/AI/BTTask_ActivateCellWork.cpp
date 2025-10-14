@@ -27,6 +27,9 @@ EBTNodeResult::Type UBTTask_ActivateCellWork::ExecuteTask(UBehaviorTreeComponent
 	// 블랙보드에서 현재 작업 중인 Cell 액터 레퍼런스 가져온다.
 	ADFCellBase* TargetCell = Cast<ADFCellBase>(BlackboardComp->GetValueAsObject(TargetCellKeyName));
 
+	// 현재 작업 중인 Cell에게 어떤 AGV가 작업중인지 보낸다(어빌리티에서도 사용할 수 있고, 다른데서도 사용할 수 있기에)
+	TargetCell->WorkingAGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+
 	if (!TargetCell)
 	{
 		//UE_LOG(LogTemp, Error, TEXT("BTTask_Activate : No Target Cell Found %s"), *TargetCellKeyName.ToString());

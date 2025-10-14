@@ -36,6 +36,8 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 	// 셀의 작업 완료 델리게이트 함수 바인딩
 	CurrentWorkingCell->OnCellWorkComplete.AddDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
 
+	UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 내가 참조하고 있는 셀 이름은! %s"), *CurrentWorkingCell->GetName());
+
 	return EBTNodeResult::InProgress;
 }
 
@@ -45,6 +47,9 @@ void UBTTask_WaitCellWork::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uin
 	if (CurrentWorkingCell)
 	{
 		CurrentWorkingCell->OnCellWorkComplete.RemoveDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
+
+		// 셀에서 참조하고 있는 AGV 해제
+		//CurrentWorkingCell->WorkingAGV = nullptr;
 
 		// 참조 해제
 		CurrentWorkingCell = nullptr;
