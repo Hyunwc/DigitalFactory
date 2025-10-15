@@ -39,14 +39,14 @@ void ADFAIController::RunAI()
 		//Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());
 
 		// 월드에 모든 Cell Free 상태로
-		for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
-		{
-			ADFCellBase* CurrentCell = *It;
-			if (IsValid(CurrentCell->GetDFAbilitySystemComponent()))
-			{
-				CurrentCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-			}
-		}
+		//for (TActorIterator<ADFCellBase> It(GetWorld()); It; ++It)
+		//{
+		//	ADFCellBase* CurrentCell = *It;
+		//	if (IsValid(CurrentCell->GetDFAbilitySystemComponent()))
+		//	{
+		//		CurrentCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+		//	}
+		//}
 
 		bool RunResult = RunBehaviorTree(BTAsset);
 		ensure(RunResult);

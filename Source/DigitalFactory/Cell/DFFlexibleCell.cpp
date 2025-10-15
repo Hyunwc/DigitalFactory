@@ -4,6 +4,7 @@
 #include "Cell/DFFlexibleCell.h"
 #include "GAS/GA/DFGA_SimpleTimerWork.h"
 #include "GAS/DFAbilitySystemComponent.h"
+#include "Materials/MaterialInstance.h"
 
 ADFFlexibleCell::ADFFlexibleCell()
 {

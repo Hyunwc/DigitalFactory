@@ -12,6 +12,7 @@ class UStaticMeshComponent;
 class UFloatingPawnMovement;
 class UDFAbilitySystemComponent;
 class UGameplayAbility;
+class ADFVehicleBase;
 
 UCLASS()
 class DIGITALFACTORY_API ADFAGV : public APawn
@@ -56,4 +57,8 @@ public:
 	// AGV의 Phase를 나타내는 태그
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS | Phase")
 	FGameplayTag AGVPhaseTag;
+
+	// 현재 장착중인 차체 액터
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
+	ADFVehicleBase* AttchVehicle;
 };

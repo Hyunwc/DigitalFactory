@@ -47,6 +47,7 @@ void UDFGA_ChassisSupply::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 	// 참조중인 데이터들은 초기화
 	OwningCell = nullptr;
 	TargetAGV = nullptr;
+	SupplyVehicle = nullptr;
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

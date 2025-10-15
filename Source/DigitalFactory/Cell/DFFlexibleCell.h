@@ -6,6 +6,7 @@
 #include "Cell/DFCellBase.h"
 #include "DFFlexibleCell.generated.h"
 
+class UMaterialInstace;
 /**
  * 
  */
@@ -19,4 +20,8 @@ public:
 
 protected:
 	virtual void StartWork(ADFAGV* TargetAGV) override;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
+	UMaterialInstance* Paint;
 };

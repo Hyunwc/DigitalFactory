@@ -7,6 +7,7 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
+#include "Vehicle/DFVehicleBase.h"
 
 ADFAGV::ADFAGV()
 {
