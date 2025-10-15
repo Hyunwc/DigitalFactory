@@ -7,6 +7,8 @@
 #include "Cell/DFCellBase.h"
 #include "DFAI.h"
 #include "GAS/DFAbilitySystemComponent.h"
+#include "Robot/DFAGV.h"
+#include "AIController.h"
 
 UBTTask_WaitCellWork::UBTTask_WaitCellWork()
 {
@@ -33,10 +35,28 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 	}
 
+	// 현재 작업 중인 Cell에게 어떤 AGV가 작업중인지 보낸다(어빌리티에서도 사용 및 다른곳에서도 사용할 수 있게)
+	CurrentWorkingCell->WorkingAGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+
 	// 셀의 작업 완료 델리게이트 함수 바인딩
 	CurrentWorkingCell->OnCellWorkComplete.AddDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
 
-	UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 내가 참조하고 있는 셀 이름은! %s"), *CurrentWorkingCell->GetName());
+	// Working으로 변경
+	if (CurrentWorkingCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
+	{
+		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCellWork : 셀 Working으로 변경!"));
+	}
+	// 셀 작업 시작 호출
+	CurrentWorkingCell->StartWork(Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn()));
+
+	if (CurrentWorkingCell)
+	{
+		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 내가 참조하고 있는 셀 이름은! %s"), *CurrentWorkingCell->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 이제 참조중이지 않아"));
+	}
 
 	return EBTNodeResult::InProgress;
 }
@@ -68,6 +88,7 @@ void UBTTask_WaitCellWork::OnCellWorkCompleted(ADFCellBase* CompletedCell)
 		{
 			UE_LOG(LogTemp, Log, TEXT("UBTTask_WaitCellWork : 셀 이제 Free로 바꿀게!"), *CurrentWorkingCell->GetName());
 		}
+
 		FinishLatentTask(*OwnerCompRef, EBTNodeResult::Succeeded);
 	}
 }

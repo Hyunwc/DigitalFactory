@@ -25,4 +25,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
 	UStaticMeshComponent* Chassis;
 
+public:
+	UFUNCTION(BlueprintCallable)
+	UStaticMeshComponent* GetChassisMesh() { return Chassis; }
 };
