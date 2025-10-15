@@ -21,7 +21,8 @@ public class DigitalFactory : ModuleRules
 			"AIModule",
 			"GameplayTasks",
 			"GameplayTags",
-			"GameplayAbilities"
+			"GameplayAbilities",
+			"ControlRig"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

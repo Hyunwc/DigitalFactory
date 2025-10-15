@@ -53,8 +53,8 @@ void UDFGA_VehiclePaint::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 		OwningCell->OnCellWorkComplete.Broadcast(OwningCell);
 	}
 
-	OwningCell = nullptr;
-	TargetAGV = nullptr;
+	//OwningCell = nullptr;
+	//TargetAGV = nullptr;
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
