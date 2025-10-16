@@ -4,8 +4,11 @@
 #include "Robot/DFRobotArm.h"
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "ControlRigComponent.h"
 #include "AI/RobotArm/DFRobotArmAIController.h"
+#include "GAS/DFAbilitySystemComponent.h"
+#include "Abilities/GameplayAbility.h"
 
 ADFRobotArm::ADFRobotArm()
 {
@@ -23,10 +26,13 @@ ADFRobotArm::ADFRobotArm()
 	ControlRigComponent = CreateDefaultSubobject<UControlRigComponent>(TEXT("ControlRig"));
 	ControlRigComponent->SetupAttachment(Root);
 
+	SearchComp = CreateDefaultSubobject<USphereComponent>(TEXT("SearchComp"));
+	SearchComp->SetupAttachment(Root);
+
 	EndEffectorName = "Robot1_End_ctrl";
 	RotatorName = "Robot1_A_ctrl";
 
-
+	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 }
 
 void ADFRobotArm::BeginPlay()
@@ -47,5 +53,24 @@ void ADFRobotArm::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+UDFAbilitySystemComponent* ADFRobotArm::GetDFAbilitySystemComponent()
+{
+	return DFASC;
+}
+
+void ADFRobotArm::StartRobotArmAbility()
+{
+	if (DFASC && RobotArmAbility)
+	{
+		FGameplayAbilitySpecHandle SpecHandle = DFASC->GiveAbility(
+			FGameplayAbilitySpec(RobotArmAbility, 1, 0, this));
+
+		if (SpecHandle.IsValid())
+		{
+			DFASC->TryActivateAbility(SpecHandle);
+		}
+	}
 }
 
