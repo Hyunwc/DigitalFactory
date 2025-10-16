@@ -6,6 +6,7 @@
 #include "Cell/DFCellBase.h"
 #include "DFTrimCell.generated.h"
 
+class ADFRobotArm;
 /**
  * 
  */
@@ -19,4 +20,12 @@ public:
 
 protected:
 	virtual void StartWork(ADFAGV* TargetAGV) override;
+
+public:
+	// TODO : 컨테이너로 관리하는거 고려
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RobotArm")
+	ADFRobotArm* LeftRobotArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RobotArm")
+	ADFRobotArm* RightRobotArm;
 };
