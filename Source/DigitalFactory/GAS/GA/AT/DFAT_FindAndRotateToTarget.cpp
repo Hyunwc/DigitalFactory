@@ -2,6 +2,7 @@
 
 
 #include "GAS/GA/AT/DFAT_FindAndRotateToTarget.h"
+#include "GAS/GA/DFGA_TireAssembly.h"
 #include "Robot/DFRobotArm.h"
 #include "GameFramework/Actor.h"
 #include "Curves/CurveFloat.h"
@@ -126,12 +127,12 @@ bool UDFAT_FindAndRotateToTarget::InitializeControlRigComponent(AActor* TargetAc
 {
 	if (!TargetActor)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AT_FIind : 타겟이 유효하지 않아요"));
 		return false;
 	}
 
 	// 로봇암 액터 내에서 컨트롤릭을 찾는다.
 	ControlRigComponent = TargetActor->GetComponentByClass<UControlRigComponent>();
+
 
 	return ControlRigComponent != nullptr;
 }
@@ -141,14 +142,12 @@ bool UDFAT_FindAndRotateToTarget::FindTargetSocketLocation()
 	AActor* OwnerActor = GetAvatarActor(); // GA를 소유한 로봇암
 	if (!OwnerActor)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AT_FIind : 오너가 유효하지 않아요"));
 		return false;
 	}
 
 	USphereComponent* SearchSphere = OwnerActor->FindComponentByClass<USphereComponent>();
 	if (!SearchSphere)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AT_FIind : 스피어가 유효하지 않아요"));
 		return false;
 	}
 
@@ -157,7 +156,6 @@ bool UDFAT_FindAndRotateToTarget::FindTargetSocketLocation()
 
 	if (OverlappingActors.Num() == 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AT_FIind : 1개도 못찾았어요"));
 		return false;
 	}
 
@@ -168,16 +166,12 @@ bool UDFAT_FindAndRotateToTarget::FindTargetSocketLocation()
 		if (TargetActor)
 		{
 			UMeshComponent* Mesh = TargetActor->FindComponentByClass<UMeshComponent>();
-			UE_LOG(LogTemp, Log, TEXT("AT_FIind : 감지된 너의 이름은? %s"), *Mesh->GetName());
-			UE_LOG(LogTemp, Log, TEXT("AT_FIind : 소켓 이름 %s"), *TargetSocketNameToFind.ToString());
 			if (Mesh && Mesh->DoesSocketExist(TargetSocketNameToFind))
 			{
 				// 목표 위치 업데이트
 				//TargetLocation = Mesh->GetSocketLocation(TargetSocketNameToFind);
 				TargetLocation = TargetActor->GetActorLocation();
 				
-				UE_LOG(LogTemp, Warning, TEXT("AT_FIind : 타겟 위치 X : %f, Y : %f, Z : %f"),
-					TargetLocation.X, TargetLocation.Y, TargetLocation.Z);
 				return true;
 			}
 		}
