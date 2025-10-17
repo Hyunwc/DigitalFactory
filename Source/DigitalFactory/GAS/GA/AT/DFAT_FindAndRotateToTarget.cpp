@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "ControlRigComponent.h"
 #include "Components/MeshComponent.h"
+#include "DrawDebugHelpers.h"
 
 UDFAT_FindAndRotateToTarget::UDFAT_FindAndRotateToTarget(const FObjectInitializer& ObjectInitializer)
 {
@@ -55,16 +56,25 @@ void UDFAT_FindAndRotateToTarget::Activate()
 	}
 
 	// 현재 회전 및 목표 회전 계산
-	FTransform ControlTransform = ControlRigComponent->GetControlTransform(TargetControlName, EControlRigComponentSpace::WorldSpace);
+	FName EndControlName = FName("Robot1_End_Ctrl");
+	// 하체 역할을 하는 A와 이펙터 역할을 하는 End의 컨트롤릭 트랜스폼 계산.
+	FTransform AControlTransform = ControlRigComponent->GetControlTransform(TargetControlName, EControlRigComponentSpace::WorldSpace);
+	FTransform EndControlTransform = ControlRigComponent->GetControlTransform(EndControlName, EControlRigComponentSpace::WorldSpace);
+	
+	StartRotation = AControlTransform.GetRotation().Rotator();
+	// EndCtrl이 타겟을 바라볼 때 필요한 회전값 계산
+	FVector EndControlLocation = EndControlTransform.GetLocation();
+	FRotator LookAt_End = UKismetMathLibrary::FindLookAtRotation(EndControlLocation, TargetLocation);
+	
+	FRotator Current_A = StartRotation;
+	// End와 A간의 차이를 계산 : 이 차이는 A가 현재 방향에서 LooAt 방향으로 추가로 얼마나 회전해야 하는지를
+	FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(LookAt_End, Current_A);
+	TargetRotation = FRotator(StartRotation.Pitch, LookAt_End.Yaw + Delta.Yaw, StartRotation.Roll);
 
-	StartRotation = ControlTransform.GetRotation().Rotator();
-
-	// TargetControlName의 월드 위치를 기준으로 타겟을 바라보는 회전을 계산
-	FVector StartLocation = ControlTransform.GetLocation();
-	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
-
-	TargetRotation = FRotator(StartRotation.Pitch, LookAtRotator.Yaw, StartRotation.Roll);
-
+	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : Current_A X : %f, Y : %f, Z : %f"), Current_A.Pitch, Current_A.Yaw, Current_A.Roll);
+	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : LookAt_End X : %f, Y : %f, Z : %f"), LookAt_End.Pitch, LookAt_End.Yaw, LookAt_End.Roll);
+	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : Delta X : %f, Y : %f, Z : %f"), Delta.Pitch, Delta.Yaw, Delta.Roll);
+	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : TargetRotation X : %f, Y : %f, Z : %f"), TargetRotation.Pitch, TargetRotation.Yaw, TargetRotation.Roll);
 	// 시간 초기화 및 Tick시작
 	TimeMoveStarted = GetWorld()->GetTimeSeconds();
 	TimeMoveWillEnd = TimeMoveStarted + DurationOfMovement;
@@ -87,7 +97,7 @@ void UDFAT_FindAndRotateToTarget::TickTask(float DeltaTime)
 	float LerpAlpha = FMath::Clamp(TimeElapsed / DurationOfMovement, 0.0f, 1.0f);
 
 	FRotator NewRotation;
-	UE_LOG(LogTemp, Log, TEXT("AT_FIind : 타겟이 유효하니 여기 들어왔지요~"));
+	//UE_LOG(LogTemp, Log, TEXT("AT_FIind : 타겟이 유효하니 여기 들어왔지요~"));
 	if (LerpAlpha >= 1.0f)
 	{
 		// 1.0f 도달 : 최종 회전 설정 및 Task 종료
@@ -98,7 +108,8 @@ void UDFAT_FindAndRotateToTarget::TickTask(float DeltaTime)
 	}
 	else
 	{
-		NewRotation = FMath::RInterpTo(StartRotation, TargetRotation, LerpAlpha, 1.0f);
+		//NewRotation = FMath::RInterpTo(StartRotation, TargetRotation, LerpAlpha, 1.0f);
+		NewRotation = FMath::Lerp(StartRotation, TargetRotation, LerpAlpha);
 	}
 
 	// 컨트롤릭의 회전 업데이트
@@ -162,7 +173,11 @@ bool UDFAT_FindAndRotateToTarget::FindTargetSocketLocation()
 			if (Mesh && Mesh->DoesSocketExist(TargetSocketNameToFind))
 			{
 				// 목표 위치 업데이트
-				TargetLocation = Mesh->GetSocketLocation(TargetSocketNameToFind);
+				//TargetLocation = Mesh->GetSocketLocation(TargetSocketNameToFind);
+				TargetLocation = TargetActor->GetActorLocation();
+				
+				UE_LOG(LogTemp, Warning, TEXT("AT_FIind : 타겟 위치 X : %f, Y : %f, Z : %f"),
+					TargetLocation.X, TargetLocation.Y, TargetLocation.Z);
 				return true;
 			}
 		}
