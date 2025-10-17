@@ -5,10 +5,13 @@
 #include "Cell/DFCellBase.h"
 #include "Robot/DFAGV.h"
 #include "GAS/DFAbilitySystemComponent.h"
+#include "GameFramework/Actor.h"
+#include "ControlRigComponent.h"
 
 UDFGA_TireAssembly::UDFGA_TireAssembly()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+	HomeRotation = FRotator::ZeroRotator;
 }
 
 void UDFGA_TireAssembly::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
