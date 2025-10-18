@@ -12,6 +12,8 @@
 #include "ControlRigComponent.h"
 #include "Components/MeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "ControlRig.h"
+#include "RigVMHost.h"
 
 UDFAT_FindAndRotateToTarget::UDFAT_FindAndRotateToTarget(const FObjectInitializer& ObjectInitializer)
 {
@@ -63,19 +65,28 @@ void UDFAT_FindAndRotateToTarget::Activate()
 	FTransform EndControlTransform = ControlRigComponent->GetControlTransform(EndControlName, EControlRigComponentSpace::WorldSpace);
 	
 	StartRotation = AControlTransform.GetRotation().Rotator();
+	
+	if (UDFGA_TireAssembly* GA_Find = Cast<UDFGA_TireAssembly>(Ability))
+	{
+		GA_Find->HomeRotation = StartRotation;
+	}
+
 	// EndCtrl이 타겟을 바라볼 때 필요한 회전값 계산
 	FVector EndControlLocation = EndControlTransform.GetLocation();
 	FRotator LookAt_End = UKismetMathLibrary::FindLookAtRotation(EndControlLocation, TargetLocation);
 	
 	FRotator Current_A = StartRotation;
+	//float TargetYaw = LookAt_End.Yaw * -1.0f;
+	//TargetRotation = FRotator(StartRotation.Pitch, TargetYaw, StartRotation.Roll);
+
 	// End와 A간의 차이를 계산 : 이 차이는 A가 현재 방향에서 LooAt 방향으로 추가로 얼마나 회전해야 하는지를
 	FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(LookAt_End, Current_A);
 	TargetRotation = FRotator(StartRotation.Pitch, LookAt_End.Yaw + Delta.Yaw, StartRotation.Roll);
 
-	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : Current_A X : %f, Y : %f, Z : %f"), Current_A.Pitch, Current_A.Yaw, Current_A.Roll);
-	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : LookAt_End X : %f, Y : %f, Z : %f"), LookAt_End.Pitch, LookAt_End.Yaw, LookAt_End.Roll);
-	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : Delta X : %f, Y : %f, Z : %f"), Delta.Pitch, Delta.Yaw, Delta.Roll);
-	UE_LOG(LogTemp, Warning, TEXT("AT_FIind : TargetRotation X : %f, Y : %f, Z : %f"), TargetRotation.Pitch, TargetRotation.Yaw, TargetRotation.Roll);
+	//UE_LOG(LogTemp, Warning, TEXT("AT_FIind : Current_A X : %f, Y : %f, Z : %f"), Current_A.Pitch, Current_A.Yaw, Current_A.Roll);
+	//UE_LOG(LogTemp, Warning, TEXT("AT_FIind : LookAt_End X : %f, Y : %f, Z : %f"), LookAt_End.Pitch, LookAt_End.Yaw, LookAt_End.Roll);
+	//UE_LOG(LogTemp, Warning, TEXT("AT_FIind : Delta X : %f, Y : %f, Z : %f"), Delta.Pitch, Delta.Yaw, Delta.Roll);
+	//UE_LOG(LogTemp, Warning, TEXT("AT_FIind : TargetRotation X : %f, Y : %f, Z : %f"), TargetRotation.Pitch, TargetRotation.Yaw, TargetRotation.Roll);
 	// 시간 초기화 및 Tick시작
 	TimeMoveStarted = GetWorld()->GetTimeSeconds();
 	TimeMoveWillEnd = TimeMoveStarted + DurationOfMovement;
@@ -93,17 +104,28 @@ void UDFAT_FindAndRotateToTarget::TickTask(float DeltaTime)
 		return;
 	}
 
+	//ControlRigComponent->
 	float CurrentTime = GetWorld()->GetTimeSeconds();
 	float TimeElapsed = CurrentTime - TimeMoveStarted;
 	float LerpAlpha = FMath::Clamp(TimeElapsed / DurationOfMovement, 0.0f, 1.0f);
-
+	
 	FRotator NewRotation;
 	//UE_LOG(LogTemp, Log, TEXT("AT_FIind : 타겟이 유효하니 여기 들어왔지요~"));
 	if (LerpAlpha >= 1.0f)
 	{
 		// 1.0f 도달 : 최종 회전 설정 및 Task 종료
 		NewRotation = TargetRotation;
+		FTransform TestTrs = ControlRigComponent->GetControlTransform(TEXT("Robot1_End_ctrl"), EControlRigComponentSpace::WorldSpace);
+		UE_LOG(LogTemp, Warning, TEXT("AT_Find : TestTrs X : %f, Y : %f, Z : %f"),
+			TestTrs.GetLocation().X, TestTrs.GetLocation().Y, TestTrs.GetLocation().Z);
 
+		if (UDFGA_TireAssembly* GA_Find = Cast<UDFGA_TireAssembly>(Ability))
+		{
+			GA_Find->EffectorSaveTransform = ControlRigComponent->GetControlTransform(TEXT("Robot1_End_ctrl"), EControlRigComponentSpace::WorldSpace);
+		}
+
+		//ControlRigComponent->GetControlRig()->RequestInit();
+		//ControlRigComponent->GetControlRig()->Evaluate_AnyThread();
 		OnFindAndRotateFinished.Broadcast();
 		EndTask();
 	}
@@ -112,7 +134,6 @@ void UDFAT_FindAndRotateToTarget::TickTask(float DeltaTime)
 		//NewRotation = FMath::RInterpTo(StartRotation, TargetRotation, LerpAlpha, 1.0f);
 		NewRotation = FMath::Lerp(StartRotation, TargetRotation, LerpAlpha);
 	}
-
 	// 컨트롤릭의 회전 업데이트
 	ControlRigComponent->SetControlRotator(TargetControlName, NewRotation, EControlRigComponentSpace::WorldSpace);
 }
@@ -132,7 +153,11 @@ bool UDFAT_FindAndRotateToTarget::InitializeControlRigComponent(AActor* TargetAc
 
 	// 로봇암 액터 내에서 컨트롤릭을 찾는다.
 	ControlRigComponent = TargetActor->GetComponentByClass<UControlRigComponent>();
-
+	
+	if (UDFGA_TireAssembly* GA_Find = Cast<UDFGA_TireAssembly>(Ability))
+	{
+		GA_Find->ControlRigComponent = ControlRigComponent;
+	}
 
 	return ControlRigComponent != nullptr;
 }
@@ -171,6 +196,14 @@ bool UDFAT_FindAndRotateToTarget::FindTargetSocketLocation()
 				// 목표 위치 업데이트
 				//TargetLocation = Mesh->GetSocketLocation(TargetSocketNameToFind);
 				TargetLocation = TargetActor->GetActorLocation();
+
+				if (UDFGA_TireAssembly* GA_Find = Cast<UDFGA_TireAssembly>(Ability))
+				{
+					UE_LOG(LogTemp, Log, TEXT("AT_Find : 어빌리티 이름 %s"), *GA_Find->GetName());
+					// 어빌리티에게 감지한 액터 넘겨줌
+					GA_Find->TargetActor = TargetActor;
+					UE_LOG(LogTemp, Log, TEXT("AT_Find : 타겟 액터 %s"), *GA_Find->TargetActor->GetName());
+				}
 				
 				return true;
 			}

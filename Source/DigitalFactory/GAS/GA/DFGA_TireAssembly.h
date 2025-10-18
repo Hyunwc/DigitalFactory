@@ -46,6 +46,10 @@ public:
 	FRotator HomeRotation;
 
 	// 어떤 태스크에서도 사용할 컨트롤릭 컴포넌트
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Car")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
 	UControlRigComponent* ControlRigComponent;
+
+	// 이펙터의 트랜스폼 저장
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Car")
+	FTransform EffectorSaveTransform;
 };

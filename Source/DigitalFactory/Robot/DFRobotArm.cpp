@@ -9,6 +9,8 @@
 #include "AI/RobotArm/DFRobotArmAIController.h"
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
+#include "ControlRig.h"
+#include "RigVMHost.h"
 
 ADFRobotArm::ADFRobotArm()
 {
@@ -41,6 +43,11 @@ void ADFRobotArm::BeginPlay()
 	
 	// 컨트롤릭 스켈레탈에 결합
 	ControlRigComponent->AddMappedCompleteSkeletalMesh(Skeletal);
+
+	URigVMHost* Host = ControlRigComponent->GetControlRig();
+
+	Host->SetPublicVariableValue(TEXT("EndWeight"), 0.0f);
+	Host->RequestInit();
 }
 
 void ADFRobotArm::Tick(float DeltaTime)
