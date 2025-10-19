@@ -11,6 +11,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "ControlRig.h"
 #include "RigVMHost.h"
+#include "GAS/GA/DFGA_RobotArmMasterAbility.h"
 
 ADFRobotArm::ADFRobotArm()
 {
@@ -44,10 +45,14 @@ void ADFRobotArm::BeginPlay()
 	// 컨트롤릭 스켈레탈에 결합
 	ControlRigComponent->AddMappedCompleteSkeletalMesh(Skeletal);
 
-	URigVMHost* Host = ControlRigComponent->GetControlRig();
-
-	Host->SetPublicVariableValue(TEXT("EndWeight"), 0.0f);
-	Host->RequestInit();
+	if (DFASC)
+	{
+		MasterSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(RobotArmMasterAbility, 1, 0, this));
+		FindSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(FindAbility, 1, 1, this));
+		TargetAttachSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(TargetAttachAbility, 1, 2, this));
+		ReturnToHomeSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(ReturnToHomeAbility, 1, 3, this));
+		CombineSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(CombineTireAbility, 1, 4, this));
+	}
 }
 
 void ADFRobotArm::Tick(float DeltaTime)
@@ -69,15 +74,22 @@ UDFAbilitySystemComponent* ADFRobotArm::GetDFAbilitySystemComponent()
 
 void ADFRobotArm::StartRobotArmAbility()
 {
-	if (DFASC && RobotArmAbility)
+	if (DFASC && MasterSpecHandle.IsValid())
 	{
-		FGameplayAbilitySpecHandle SpecHandle = DFASC->GiveAbility(
-			FGameplayAbilitySpec(RobotArmAbility, 1, 0, this));
+		bool bActivated = DFASC->TryActivateAbility(MasterSpecHandle);
 
-		if (SpecHandle.IsValid())
+		if (!bActivated)
 		{
-			DFASC->TryActivateAbility(SpecHandle);
+			UE_LOG(LogTemp, Warning, TEXT("로봇암 : 마스터 어빌리티 활성화 실패"));
 		}
+	}
+}
+
+void ADFRobotArm::NotifySubAbilityFinished()
+{
+	if (ActiveMaster)
+	{
+		ActiveMaster->OnAbilityEnded();
 	}
 }
 
