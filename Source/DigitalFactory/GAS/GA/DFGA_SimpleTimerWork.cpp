@@ -73,5 +73,5 @@ void UDFGA_SimpleTimerWork::OnWorkCompleted()
 	GetWorld()->GetTimerManager().ClearTimer(WorkTimerHandle);
 
 	// 작업 완료 후 어빌리티 종료
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

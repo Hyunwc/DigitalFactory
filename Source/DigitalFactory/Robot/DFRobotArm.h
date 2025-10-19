@@ -12,6 +12,7 @@ class UControlRigComponent;
 class UDFAbilitySystemComponent;
 class UGameplayAbility;
 class USphereComponent;
+class UDFGA_RobotArmMasterAbility;
 
 UCLASS()
 class DIGITALFACTORY_API ADFRobotArm : public APawn
@@ -52,6 +53,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
 	FName RotatorName;
 
+	// 복귀 위치
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
+	FTransform HomeTransform;
+
+	// 현재 타겟 액터
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
+	AActor* TargetActor;
+
 public:
 	// ASC
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
@@ -59,7 +68,29 @@ public:
 
 	// Ability
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
-	TSubclassOf<UGameplayAbility> RobotArmAbility;
+	TSubclassOf<UGameplayAbility> RobotArmMasterAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TSubclassOf<UGameplayAbility> FindAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TSubclassOf<UGameplayAbility> TargetAttachAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TSubclassOf<UGameplayAbility> ReturnToHomeAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TSubclassOf<UGameplayAbility> CombineTireAbility;
+
+public:
+	FGameplayAbilitySpecHandle MasterSpecHandle;
+	FGameplayAbilitySpecHandle FindSpecHandle;
+	FGameplayAbilitySpecHandle TargetAttachSpecHandle;
+	FGameplayAbilitySpecHandle ReturnToHomeSpecHandle;
+	FGameplayAbilitySpecHandle CombineSpecHandle;
+
+	UPROPERTY()
+	UDFGA_RobotArmMasterAbility* ActiveMaster;
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -68,4 +99,7 @@ public:
 	// 트림셀이 호출하면 어빌리티 시작
 	UFUNCTION(BlueprintCallable)
 	void StartRobotArmAbility();
+
+	UFUNCTION(BlueprintCallable)
+	void NotifySubAbilityFinished();
 };
