@@ -5,6 +5,7 @@
 #include "GAS/GA/DFGA_SimpleTimerWork.h"
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Robot/DFRobotArm.h"
+#include "GAS/GA/DFGA_RobotArmMasterAbility.h"
 
 ADFTrimCell::ADFTrimCell()
 {
@@ -21,6 +22,13 @@ void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
 	LeftRobotArm->TargetAGV = TargetAGV;
 	RightRobotArm->TargetAGV = TargetAGV;
 
+	//LeftRobotArm->RobotArmMasterAbility.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
+
+	UDFGA_RobotArmMasterAbility* LeftRAGA = Cast<UDFGA_RobotArmMasterAbility>(LeftRobotArm->RobotArmMasterAbility);
+	UDFGA_RobotArmMasterAbility* RightRAGA = Cast<UDFGA_RobotArmMasterAbility>(RightRobotArm->RobotArmMasterAbility);
+
+	LeftRAGA->OnFinishTireAssembly.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
+	RightRAGA->OnFinishTireAssembly.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
 	// 어빌리티 활성화
 	//if (DFASC && CellWorkAbilityClass)
 	//{
@@ -38,4 +46,8 @@ void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
 	//			*CellWorkAbilityClass->GetName(), *GetName());
 	//	}
 	//}
+}
+
+void ADFTrimCell::OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished)
+{
 }

@@ -107,6 +107,7 @@ void UDFGA_RobotArmMasterAbility::OnAbilityEnded()
 	if (CurrentPhase == ERobotArmPhase::Finished)
 	{
 		// 여기서 완전히 종료
+		OnFinishTireAssembly.Broadcast(Owner->TypeTag, true);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
