@@ -16,6 +16,8 @@ class USphereComponent;
 class UDFGA_RobotArmMasterAbility;
 class ADFAGV;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRobotArmFinishedDelegate, FGameplayTag, OwnerTag, bool, bFinished);
+
 UCLASS()
 class DIGITALFACTORY_API ADFRobotArm : public APawn
 {
@@ -79,6 +81,9 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "GAS")
 	FGameplayTag TypeTag;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnRobotArmFinishedDelegate OnRobotArmFinished;
+
 public:
 	// ASC
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
@@ -120,4 +125,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void NotifySubAbilityFinished();
+
+	UFUNCTION()
+	void HandleAbilityFinished(FGameplayTag OwnerTag, bool bFinished);
 };

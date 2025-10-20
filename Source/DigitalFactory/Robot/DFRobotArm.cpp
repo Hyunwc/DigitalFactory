@@ -88,6 +88,25 @@ void ADFRobotArm::StartRobotArmAbility()
 	{
 		bool bActivated = DFASC->TryActivateAbility(MasterSpecHandle);
 
+		FGameplayAbilitySpec* Spec = DFASC->FindAbilitySpecFromClass(UDFGA_RobotArmMasterAbility::StaticClass());
+		if (Spec && Spec->GetPrimaryInstance())
+		{
+			if (UDFGA_RobotArmMasterAbility* Inst = Cast<UDFGA_RobotArmMasterAbility>(Spec->GetPrimaryInstance()))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 등록 성공"));
+				Inst->OnFinishTireAssembly.AddDynamic(this, &ADFRobotArm::HandleAbilityFinished);
+			}
+		}
+
+		//if (UDFGA_RobotArmMasterAbility* GA_Master = Cast<UDFGA_RobotArmMasterAbility>(MasterSpecHandle))
+		//{
+		//	GA_Master->OnFinishTireAssembly.AddDynamic(this, &ADFRobotArm::HandleAbilityFinished);
+		//}
+		//else
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 등록 실패"));
+		//}
+
 		if (!bActivated)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("로봇암 : 마스터 어빌리티 활성화 실패"));
@@ -101,5 +120,10 @@ void ADFRobotArm::NotifySubAbilityFinished()
 	{
 		ActiveMaster->OnAbilityEnded();
 	}
+}
+
+void ADFRobotArm::HandleAbilityFinished(FGameplayTag OwnerTag, bool bFinished)
+{
+	OnRobotArmFinished.Broadcast(OwnerTag, bFinished);
 }
 

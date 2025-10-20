@@ -20,7 +20,7 @@ enum class ERobotArmPhase : uint8
 
 class ADFRobotArm;
 
-DECLARE_DYNAMIC_MULITCAST_DELEGATE_TwoParams(FOnFinishTireAssemblyDelegate, FGameplayTag, OwnerTag, bool, bFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnFinishTireAssemblyDelegate, FGameplayTag, OwnerTag, bool, bFinished);
 
 /**
  * 

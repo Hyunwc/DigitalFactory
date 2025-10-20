@@ -30,6 +30,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RobotArm")
 	ADFRobotArm* RightRobotArm;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RobotArm")
+	bool bRightRobotArmFinished;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RobotArm")
+	bool bLeftRobotArmFinished;
+
 public:
 	UFUNCTION()
 	void OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished);

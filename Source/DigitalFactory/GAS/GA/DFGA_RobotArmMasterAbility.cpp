@@ -133,11 +133,5 @@ void UDFGA_RobotArmMasterAbility::OnAbilityEnded()
 
 	UE_LOG(LogTemp, Log, TEXT("마스터어빌리티 : 끝났으니 다음 어빌리티 발동해보자"));
 	NextAbility();
-	//FTimerHandle DelayHandle;
-	//Owner->GetWorld()->GetTimerManager().SetTimer(DelayHandle, [this]()
-	//	{
-	//		UE_LOG(LogTemp, Log, TEXT("다음 어빌리티 발동 (딜레이 후)"));
-	//		NextAbility();
-	//	}, 0.1f, false);
 }
 
