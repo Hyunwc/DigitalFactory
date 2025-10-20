@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GameplayTagContainer.h"
 #include "DFRobotArm.generated.h"
 
 class USceneComponent;
@@ -13,6 +14,7 @@ class UDFAbilitySystemComponent;
 class UGameplayAbility;
 class USphereComponent;
 class UDFGA_RobotArmMasterAbility;
+class ADFAGV;
 
 UCLASS()
 class DIGITALFACTORY_API ADFRobotArm : public APawn
@@ -64,6 +66,18 @@ public:
 	// 현재 타겟 액터
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
 	AActor* TargetActor;
+
+	// 현재 셀에서 넘겨받은 AGV
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	ADFAGV* TargetAGV;
+
+	// 자신이 어떤 페이즈인지(앞, 뒤)
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "GAS")
+	FGameplayTag PhaseTag;
+
+	// 현재 자신이 어떤 타입인지(왼쪽, 오른쪽)
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "GAS")
+	FGameplayTag TypeTag;
 
 public:
 	// ASC

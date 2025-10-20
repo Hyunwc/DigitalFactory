@@ -8,11 +8,12 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GAS/GA/AT/DFAT_SoftRotate.h"
+#include "Vehicle/DFTire.h"
 
 UDFGA_FindAndRotate::UDFGA_FindAndRotate()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-	AControl = FName("Robot1_A_ctrl");
+	//AControl = FName("Robot1_A_ctrl");
 }
 
 void UDFGA_FindAndRotate::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -54,31 +55,47 @@ void UDFGA_FindAndRotate::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		return;
 	}
 
-	TargetActor = OverlappingActors[0];
+	for (AActor* Target : OverlappingActors)
+	{
+		ADFTire* Tire = Cast<ADFTire>(Target);
+		if (!Tire->bCombined)
+		{
+			TargetActor = Tire;
+		}
+	}
+	//TargetActor = OverlappingActors[0];
 	Owner->TargetActor = TargetActor;
 	TargetLocation = TargetActor->GetActorLocation();
 
-	FName EControl = TEXT("Robot1_End_ctrl");
-	FTransform ATrs = ControlRigComponent->GetControlTransform(AControl, EControlRigComponentSpace::WorldSpace);
-	FTransform ETrs = ControlRigComponent->GetControlTransform(EControl, EControlRigComponentSpace::WorldSpace);
+	if (Owner)
+	{
+		Owner->NotifySubAbilityFinished();
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+	}
 
-	// 회전 계산
-	StartRot = ATrs.GetRotation().Rotator();
-	FVector EndLoc = ETrs.GetLocation();
-	// End가 타겟을 바라보게끔
-	FRotator LookAt_End = UKismetMathLibrary::FindLookAtRotation(EndLoc, TargetLocation);
-	FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(LookAt_End, StartRot);
-	TargetRot = FRotator(StartRot.Pitch, LookAt_End.Yaw + Delta.Yaw, StartRot.Roll);
+	// TODO : 우선 타겟을 탐색하는 기능만 남겨두고 회전로직은 다음 기회에
 
-	// End
-	FVector LocalOffset = ATrs.InverseTransformPosition(ETrs.GetLocation());
-	FTransform RotatedA(TargetRot, ATrs.GetLocation());
-	EndTransform = FTransform(LookAt_End, RotatedA.TransformPosition(LocalOffset));
+	//FName EControl = TEXT("Robot1_End_ctrl");
+	////FTransform ATrs = ControlRigComponent->GetControlTransform(AControl, EControlRigComponentSpace::WorldSpace);
+	////FTransform ETrs = ControlRigComponent->GetControlTransform(EControl, EControlRigComponentSpace::WorldSpace);
+	//
+	//// 회전 계산
+	//StartRot = ATrs.GetRotation().Rotator();
+	//FVector EndLoc = ETrs.GetLocation();
+	//// End가 타겟을 바라보게끔
+	//FRotator LookAt_End = UKismetMathLibrary::FindLookAtRotation(EndLoc, TargetLocation);
+	//FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(LookAt_End, StartRot);
+	//TargetRot = FRotator(StartRot.Pitch, LookAt_End.Yaw + Delta.Yaw, StartRot.Roll);
+	//
+	//// End
+	//FVector LocalOffset = ATrs.InverseTransformPosition(ETrs.GetLocation());
+	//FTransform RotatedA(TargetRot, ATrs.GetLocation());
+	//EndTransform = FTransform(LookAt_End, RotatedA.TransformPosition(LocalOffset));
 
 	//UDFAT_SoftRotate* RotateTask;
 	//RotateTask->OnFinishedRotate.AddDynamic(this, &UDFGA_FindAndRotate::OnRotationFinished);
 	// 나머지 로직은 블루프린트에서 처리해야함
-	K2_ActivateAbility();
+	//K2_ActivateAbility();
 }
 
 void UDFGA_FindAndRotate::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -90,7 +107,7 @@ void UDFGA_FindAndRotate::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 
 void UDFGA_FindAndRotate::OnRotationFinished(FRotator FinalRotation)
 {
-	ControlRigComponent->SetControlRotator(AControl, FinalRotation, EControlRigComponentSpace::WorldSpace);
+	//ControlRigComponent->SetControlRotator(AControl, FinalRotation, EControlRigComponentSpace::WorldSpace);
 	ControlRigComponent->SetControlTransform(TEXT("Robot1_End_ctrl"), EndTransform, EControlRigComponentSpace::WorldSpace);
 	// FK 적용 즉시 강제 업데이트
 	//ControlRigComponent->GetControlRig()->Evaluate_AnyThread();

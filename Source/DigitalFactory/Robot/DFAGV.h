@@ -60,5 +60,5 @@ public:
 
 	// 현재 장착중인 차체 액터
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
-	ADFVehicleBase* AttchVehicle;
+	ADFVehicleBase* AttachVehicle;
 };

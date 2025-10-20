@@ -53,8 +53,11 @@ void UDFGA_RobotArmMasterAbility::NextAbility()
 
 	if (CurrentPhase == ERobotArmPhase::Finished)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
+		// 복귀한번 하고 끝
+		DFASC->TryActivateAbility(Owner->ReturnToHomeSpecHandle);
+		//K2_ActivateAbility();
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		//return;
 	}
 
 	FGameplayAbilitySpecHandle TargetHandle;
@@ -81,6 +84,7 @@ void UDFGA_RobotArmMasterAbility::NextAbility()
 	if (!TargetHandle.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("마스터 : 어빌리티 핸들 invalid"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
 	}
 
@@ -99,9 +103,40 @@ void UDFGA_RobotArmMasterAbility::NextAbility()
 void UDFGA_RobotArmMasterAbility::OnAbilityEnded()
 {
 	UE_LOG(LogTemp, Log, TEXT("마스터어빌리티 : 여기 들어오는건가"));
-	CurrentPhase = static_cast<ERobotArmPhase>(static_cast<uint8>(CurrentPhase) + 1);
+
+	if (CurrentPhase == ERobotArmPhase::Finished)
+	{
+		// 여기서 완전히 종료
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
+
+	if (CurrentPhase == ERobotArmPhase::CombineTire)
+	{
+		if (Owner->PhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Front")))
+		{
+			CurrentPhase = ERobotArmPhase::FindRotate;
+			Owner->PhaseTag = FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Back");
+		}
+		else
+		{
+			// 작업 완료한 상태
+			CurrentPhase = ERobotArmPhase::Finished;
+			Owner->PhaseTag = FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Front");
+		}
+	}
+	else
+	{
+		CurrentPhase = static_cast<ERobotArmPhase>(static_cast<uint8>(CurrentPhase) + 1);
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("마스터어빌리티 : 끝났으니 다음 어빌리티 발동해보자"));
 	NextAbility();
+	//FTimerHandle DelayHandle;
+	//Owner->GetWorld()->GetTimerManager().SetTimer(DelayHandle, [this]()
+	//	{
+	//		UE_LOG(LogTemp, Log, TEXT("다음 어빌리티 발동 (딜레이 후)"));
+	//		NextAbility();
+	//	}, 0.1f, false);
 }
 

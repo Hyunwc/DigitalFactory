@@ -43,14 +43,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	FTransform EndTransform;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
-	FName AControl;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	//FName AControl;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
-	FRotator StartRot;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
-	FRotator TargetRot;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	//FRotator StartRot;
+	//
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	//FRotator TargetRot;
 public:
 	UFUNCTION(BlueprintCallable)
 	void OnRotationFinished(FRotator FinalRotation);
