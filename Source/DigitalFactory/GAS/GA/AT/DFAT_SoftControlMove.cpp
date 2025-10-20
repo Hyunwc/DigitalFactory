@@ -54,14 +54,16 @@ void UDFAT_SoftControlMove::TickTask(float DeltaTime)
 
 	FTransform CurTrans = ControlRigComponent->GetControlTransform(TargetControlName, EControlRigComponentSpace::WorldSpace);
 	FVector NewLoc = FMath::Lerp(StartTransform.GetLocation(), TargetLocation, Alpha);
-	FQuat NewQuat = FQuat::Slerp(StartTransform.GetRotation(), TargetActor->GetActorQuat(), Alpha).GetNormalized();
-	FTransform NewTransform(NewQuat, NewLoc, FVector(1.0f, 1.0f, 1.0f));
+	//FQuat NewQuat = FQuat::Slerp(StartTransform.GetRotation(), TargetActor->GetActorQuat(), Alpha).GetNormalized();
+	//FQuat NewQuat = FQuat::Slerp(StartTransform.GetRotation(), TargetActor->GetActorQuat(), Alpha).GetNormalized();
+	//FTransform NewTransform(NewQuat, NewLoc, FVector(1.0f, 1.0f, 1.0f));
+	FTransform NewTransform(FRotator::ZeroRotator, NewLoc, FVector(1.0f, 1.0f, 1.0f));
 
 	ControlRigComponent->SetControlTransform(TargetControlName, NewTransform, EControlRigComponentSpace::WorldSpace);
 
 	if (Alpha >= 1.0f)
 	{
-		OnFinishedMove.Broadcast();
+		OnFinishedMove.Broadcast(NewTransform);
 		EndTask();
 	}
 }

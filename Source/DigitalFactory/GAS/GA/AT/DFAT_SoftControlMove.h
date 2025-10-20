@@ -9,7 +9,7 @@
 class UControlRigComponent;
 class AActor;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFinishedMoveDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFinishedMoveDelegate, FTransform, FinalTransform);
 /**
  * 
  */

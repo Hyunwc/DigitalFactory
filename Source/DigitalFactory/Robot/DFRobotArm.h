@@ -53,9 +53,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
 	FName RotatorName;
 
-	// 복귀 위치
+	// End의 복귀 위치
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
-	FTransform HomeTransform;
+	FTransform EndHomeTransform;
+
+	// A의 복귀 방향
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
+	FRotator AHomeRotate;
 
 	// 현재 타겟 액터
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ControlRig")
