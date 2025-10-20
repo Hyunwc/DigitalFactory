@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameplayTagContainer.h"
 #include "DFGA_RobotArmMasterAbility.generated.h"
 
 UENUM(BlueprintType)
@@ -18,6 +19,9 @@ enum class ERobotArmPhase : uint8
 };
 
 class ADFRobotArm;
+
+DECLARE_DYNAMIC_MULITCAST_DELEGATE_TwoParams(FOnFinishTireAssemblyDelegate, FGameplayTag, OwnerTag, bool, bFinished);
+
 /**
  * 
  */
@@ -43,6 +47,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "GAS")
 	ADFRobotArm* Owner;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnFinishTireAssemblyDelegate OnFinishTireAssembly;
 
 public:
 	// 다음 어빌리티를 시작

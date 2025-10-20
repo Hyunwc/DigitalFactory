@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Cell/DFCellBase.h"
+#include "GameplayTagContainer.h"
 #include "DFTrimCell.generated.h"
 
 class ADFRobotArm;
@@ -28,4 +29,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RobotArm")
 	ADFRobotArm* RightRobotArm;
+
+public:
+	UFUNCTION()
+	void OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished);
 };
