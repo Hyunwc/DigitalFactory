@@ -16,8 +16,10 @@ void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
 	// 비어 있어서 굳이 Super 호출 필요x. 나중에 CellBase에 로직추가될거 고려해서 일단 주석 처리
 	//Super::StartWork(TargetAGV);
 
-	//LeftRobotArm->StartRobotArmAbility();
+	LeftRobotArm->StartRobotArmAbility();
 	RightRobotArm->StartRobotArmAbility();
+	LeftRobotArm->TargetAGV = TargetAGV;
+	RightRobotArm->TargetAGV = TargetAGV;
 
 	// 어빌리티 활성화
 	//if (DFASC && CellWorkAbilityClass)

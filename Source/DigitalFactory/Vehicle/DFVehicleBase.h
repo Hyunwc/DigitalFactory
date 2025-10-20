@@ -17,7 +17,7 @@ class DIGITALFACTORY_API ADFVehicleBase : public AActor
 public:	
 	ADFVehicleBase();
 
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	USceneComponent* Root;
 
