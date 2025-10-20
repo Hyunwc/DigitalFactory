@@ -53,6 +53,16 @@ void ADFRobotArm::BeginPlay()
 		ReturnToHomeSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(ReturnToHomeAbility, 1, 3, this));
 		CombineSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(CombineTireAbility, 1, 4, this));
 	}
+
+	if (ControlRigComponent)
+	{
+		EndHomeTransform = ControlRigComponent->GetControlTransform(EndEffectorName, EControlRigComponentSpace::WorldSpace);
+		UE_LOG(LogTemp, Warning, TEXT("RobotArm : End의 복귀위치 X : %f, Y : %f, Z : %f")
+			, EndHomeTransform.GetLocation().X, EndHomeTransform.GetLocation().Y, EndHomeTransform.GetLocation().Z);
+		AHomeRotate = ControlRigComponent->GetControlRotator(RotatorName, EControlRigComponentSpace::WorldSpace);
+		UE_LOG(LogTemp, Warning, TEXT("RobotArm : A의 복귀위치 X : %f, Y : %f, Z : %f")
+			, AHomeRotate.Pitch, AHomeRotate.Yaw, AHomeRotate.Roll);
+	}
 }
 
 void ADFRobotArm::Tick(float DeltaTime)

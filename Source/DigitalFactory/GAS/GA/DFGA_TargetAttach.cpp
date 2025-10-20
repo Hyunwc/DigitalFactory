@@ -5,6 +5,8 @@
 #include "ControlRigComponent.h"
 #include "GameFramework/Actor.h"
 #include "Robot/DFRobotArm.h"
+#include "Components/MeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 UDFGA_TargetAttach::UDFGA_TargetAttach()
 {
@@ -34,7 +36,8 @@ void UDFGA_TargetAttach::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	// 컨트롤릭 탐색
 	ControlRigComponent = Owner->ControlRigComponent;
 	TargetActor = Owner->TargetActor;
-	TargetLocation = TargetActor->GetActorLocation();
+	UMeshComponent* Mesh = TargetActor->FindComponentByClass<UMeshComponent>();
+	TargetLocation = Mesh->GetSocketLocation(TEXT("TireSocket"));
 	UE_LOG(LogTemp, Log, TEXT("GA_Target : 타겟의 위치 X : %f, Y : %f, Z : %f"), TargetActor->GetActorLocation().X,
 		TargetActor->GetActorLocation().Y, TargetActor->GetActorLocation().Z);
 
@@ -46,11 +49,24 @@ void UDFGA_TargetAttach::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UDFGA_TargetAttach::OnAttachStart()
+void UDFGA_TargetAttach::OnAttachStart(FTransform NewTransform)
 {
 	// TODO : 어태치 작업 코드 작성
 	UE_LOG(LogTemp, Log, TEXT("GA_Attach : 고마워 어태치 시작해볼게"));
 
+	ControlRigComponent->SetControlTransform(EControl, NewTransform, EControlRigComponentSpace::WorldSpace);
+
+	if (TargetActor && Owner)
+	{
+		if (USkeletalMeshComponent* OwnerSkeletal = Owner->Skeletal)
+		{
+			TargetActor->AttachToComponent(
+				OwnerSkeletal,
+				FAttachmentTransformRules::KeepWorldTransform,
+				TEXT("GrabSocket")
+			);
+		}
+	}
 	if (Owner)
 	{
 		Owner->NotifySubAbilityFinished();
