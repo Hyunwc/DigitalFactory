@@ -74,7 +74,7 @@ public:
 	ADFAGV* WorkingAGV;
 
 	// 이 셀의 작업이 완료됐음을 알릴 델리게이트
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnCellWorkComplete OnCellWorkComplete;
 
 public:
