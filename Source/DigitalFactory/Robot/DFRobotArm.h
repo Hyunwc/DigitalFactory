@@ -115,6 +115,10 @@ public:
 	UPROPERTY()
 	UDFGA_RobotArmMasterAbility* ActiveMaster;
 
+	// 현재 트림셀 종료 조건을 만족하기 위해 로봇암마다 어빌리티 태스크에 적용할 시간의 딜레이를 주기 위함.
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "GAS")
+	float OwnerDuration;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	UDFAbilitySystemComponent* GetDFAbilitySystemComponent();

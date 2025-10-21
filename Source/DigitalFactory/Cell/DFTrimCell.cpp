@@ -20,6 +20,7 @@ void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
 
 	if (LeftRobotArm && RightRobotArm)
 	{
+		UE_LOG(LogTemp, Log, TEXT("트림셀 : 구독할게요"));
 		LeftRobotArm->OnRobotArmFinished.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
 	}
 
@@ -60,9 +61,11 @@ void ADFTrimCell::OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished)
 		bRightRobotArmFinished = bFinished;
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("트림셀 : 수고했어 로봇암아"));
+
+	UE_LOG(LogTemp, Log, TEXT("트림셀 : 여기 들어오니?"));
+	OnCellWorkComplete.Broadcast(this);
 	if (bLeftRobotArmFinished && bRightRobotArmFinished)
 	{
-		UE_LOG(LogTemp, Log, TEXT("트림셀 : 여기 들어오니?"));
-		OnCellWorkComplete.Broadcast(this);
 	}
 }

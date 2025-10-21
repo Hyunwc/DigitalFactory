@@ -37,10 +37,10 @@ void UDFAT_SoftControlMove::Activate()
 	}
 
 	StartTransform = ControlRigComponent->GetControlTransform(TargetControlName, EControlRigComponentSpace::WorldSpace);
-	UE_LOG(LogTemp, Warning, TEXT("소프트무브 : StartTransform X : %f, Y : %f, Z : %f"),
-		StartTransform.GetLocation().X, StartTransform.GetLocation().Y, StartTransform.GetLocation().Z);
-	UE_LOG(LogTemp, Warning, TEXT("소프트무브 : TargetLoc X : %f, Y : %f, Z : %f"),
-		TargetLocation.X, TargetLocation.Y, TargetLocation.Z);
+	//UE_LOG(LogTemp, Warning, TEXT("소프트무브 : StartTransform X : %f, Y : %f, Z : %f"),
+	//	StartTransform.GetLocation().X, StartTransform.GetLocation().Y, StartTransform.GetLocation().Z);
+	//UE_LOG(LogTemp, Warning, TEXT("소프트무브 : TargetLoc X : %f, Y : %f, Z : %f"),
+	//	TargetLocation.X, TargetLocation.Y, TargetLocation.Z);
 	ElapsedTime = 0.0f;
 	bTickingTask = true;
 }

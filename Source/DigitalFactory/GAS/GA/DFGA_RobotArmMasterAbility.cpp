@@ -53,11 +53,8 @@ void UDFGA_RobotArmMasterAbility::NextAbility()
 
 	if (CurrentPhase == ERobotArmPhase::Finished)
 	{
-		// 복귀한번 하고 끝
-		DFASC->TryActivateAbility(Owner->ReturnToHomeSpecHandle);
-		//K2_ActivateAbility();
-		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		//return;
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
 	}
 
 	FGameplayAbilitySpecHandle TargetHandle;
@@ -104,12 +101,15 @@ void UDFGA_RobotArmMasterAbility::OnAbilityEnded()
 {
 	UE_LOG(LogTemp, Log, TEXT("마스터어빌리티 : 여기 들어오는건가"));
 
-	if (CurrentPhase == ERobotArmPhase::Finished)
+	// 여기에 들어온다는 것은 뒷바퀴 결합하고 복귀했다는 뜻
+	if (CurrentPhase == ERobotArmPhase::ReturnToHome && 
+		Owner->PhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Finish")))
 	{
 		// 여기서 완전히 종료
+		UE_LOG(LogTemp, Log, TEXT("마스터어빌리티 : 이제 완전 끝났으니까 신호를보내줄게"));
 		OnFinishTireAssembly.Broadcast(Owner->TypeTag, true);
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		return;
+		Owner->PhaseTag = FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Front");
+		CurrentPhase = ERobotArmPhase::Finished;
 	}
 
 	if (CurrentPhase == ERobotArmPhase::CombineTire)
@@ -122,8 +122,8 @@ void UDFGA_RobotArmMasterAbility::OnAbilityEnded()
 		else
 		{
 			// 작업 완료한 상태
-			CurrentPhase = ERobotArmPhase::Finished;
-			Owner->PhaseTag = FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Front");
+			CurrentPhase = ERobotArmPhase::ReturnToHome;
+			Owner->PhaseTag = FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Finish");
 		}
 	}
 	else

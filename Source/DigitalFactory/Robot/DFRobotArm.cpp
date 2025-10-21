@@ -35,6 +35,8 @@ ADFRobotArm::ADFRobotArm()
 	EndEffectorName = "Robot1_End_ctrl";
 	RotatorName = "Robot1_A_ctrl";
 
+	OwnerDuration = 0.0f;
+
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 }
 
@@ -57,11 +59,11 @@ void ADFRobotArm::BeginPlay()
 	if (ControlRigComponent)
 	{
 		EndHomeTransform = ControlRigComponent->GetControlTransform(EndEffectorName, EControlRigComponentSpace::WorldSpace);
-		UE_LOG(LogTemp, Warning, TEXT("RobotArm : End의 복귀위치 X : %f, Y : %f, Z : %f")
-			, EndHomeTransform.GetLocation().X, EndHomeTransform.GetLocation().Y, EndHomeTransform.GetLocation().Z);
+		//UE_LOG(LogTemp, Warning, TEXT("RobotArm : End의 복귀위치 X : %f, Y : %f, Z : %f")
+		//	, EndHomeTransform.GetLocation().X, EndHomeTransform.GetLocation().Y, EndHomeTransform.GetLocation().Z);
 		AHomeRotate = ControlRigComponent->GetControlRotator(RotatorName, EControlRigComponentSpace::WorldSpace);
-		UE_LOG(LogTemp, Warning, TEXT("RobotArm : A의 복귀위치 X : %f, Y : %f, Z : %f")
-			, AHomeRotate.Pitch, AHomeRotate.Yaw, AHomeRotate.Roll);
+		//UE_LOG(LogTemp, Warning, TEXT("RobotArm : A의 복귀위치 X : %f, Y : %f, Z : %f")
+		//	, AHomeRotate.Pitch, AHomeRotate.Yaw, AHomeRotate.Roll);
 	}
 }
 
@@ -88,24 +90,35 @@ void ADFRobotArm::StartRobotArmAbility()
 	{
 		bool bActivated = DFASC->TryActivateAbility(MasterSpecHandle);
 
-		FGameplayAbilitySpec* Spec = DFASC->FindAbilitySpecFromClass(UDFGA_RobotArmMasterAbility::StaticClass());
+		// 스펙을 찾고
+		FGameplayAbilitySpec* Spec = DFASC->FindAbilitySpecFromHandle(MasterSpecHandle);
+		// 어빌리티스펙이 유효하고 활성화된 인스턴스를 가지고 있는지?
 		if (Spec && Spec->GetPrimaryInstance())
 		{
-			if (UDFGA_RobotArmMasterAbility* Inst = Cast<UDFGA_RobotArmMasterAbility>(Spec->GetPrimaryInstance()))
+			if (UDFGA_RobotArmMasterAbility* Master = Cast<UDFGA_RobotArmMasterAbility>(Spec->GetPrimaryInstance()))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 등록 성공"));
-				Inst->OnFinishTireAssembly.AddDynamic(this, &ADFRobotArm::HandleAbilityFinished);
+				bool bIsBound = Master->OnFinishTireAssembly.IsAlreadyBound(this, &ADFRobotArm::HandleAbilityFinished);
+
+				if (!bIsBound)
+				{
+					Master->OnFinishTireAssembly.AddDynamic(this, &ADFRobotArm::HandleAbilityFinished);
+					UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 바인딩 시도"));
+
+					if (Master->OnFinishTireAssembly.IsAlreadyBound(this, &ADFRobotArm::HandleAbilityFinished))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 바인딩 성공"));
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("로봇암 : 델리게이트 바인딩 실패"));
+					}
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트가 이미 바인딩 되어있습니다"));
+				}
 			}
 		}
-
-		//if (UDFGA_RobotArmMasterAbility* GA_Master = Cast<UDFGA_RobotArmMasterAbility>(MasterSpecHandle))
-		//{
-		//	GA_Master->OnFinishTireAssembly.AddDynamic(this, &ADFRobotArm::HandleAbilityFinished);
-		//}
-		//else
-		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 등록 실패"));
-		//}
 
 		if (!bActivated)
 		{
@@ -124,6 +137,7 @@ void ADFRobotArm::NotifySubAbilityFinished()
 
 void ADFRobotArm::HandleAbilityFinished(FGameplayTag OwnerTag, bool bFinished)
 {
+	UE_LOG(LogTemp, Warning, TEXT("로봇암 : 마스터 어빌리티에게 끝났단 신호받음. 다음 구독자에게 보냄"));
 	OnRobotArmFinished.Broadcast(OwnerTag, bFinished);
 }
 
