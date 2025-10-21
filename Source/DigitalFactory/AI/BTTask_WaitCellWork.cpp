@@ -14,6 +14,7 @@ UBTTask_WaitCellWork::UBTTask_WaitCellWork()
 {
 	NodeName = TEXT("Wait For Cell Work");
 	bNotifyTaskFinished = true; // Task가 종료될 때 OnTaskFinished가 호출되도록 설정
+	bCreateNodeInstance = true; // AI가 같은 메모리를 참조하지 않기 위해 개별적인 노드를 만들게 설정
 	TargetCellKeyName = BBKEY_TARGETCELL;
 }
 
@@ -44,18 +45,18 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 	// Working으로 변경
 	if (CurrentWorkingCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
 	{
-		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCellWork : 셀 Working으로 변경!"));
+		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCellWork : 셀 Working으로 변경! (%s)"), *GetNameSafe(OwnerCompRef->GetOwner()));
 	}
 	// 셀 작업 시작 호출
 	CurrentWorkingCell->StartWork(Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn()));
 
 	if (CurrentWorkingCell)
 	{
-		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 내가 참조하고 있는 셀 이름은! %s"), *CurrentWorkingCell->GetName());
+		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 내가 참조하고 있는 셀 이름은! %s (%s)"), *CurrentWorkingCell->GetName(), *GetNameSafe(OwnerCompRef->GetOwner()));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 이제 참조중이지 않아"));
+		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCell : 이제 참조중이지 않아 (%s)"), *GetNameSafe(OwnerCompRef->GetOwner()));
 	}
 
 	return EBTNodeResult::InProgress;
@@ -66,6 +67,8 @@ void UBTTask_WaitCellWork::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uin
 	// Task가 종료될 때 델리게이트 바인딩 해제
 	if (CurrentWorkingCell)
 	{
+		UE_LOG(LogTemp, Log, TEXT("%s : Task 종료! (%s)"), *CurrentWorkingCell->GetName(), *GetNameSafe(OwnerCompRef->GetOwner()));
+
 		CurrentWorkingCell->OnCellWorkComplete.RemoveDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
 
 		// 셀에서 참조하고 있는 AGV 해제
@@ -83,13 +86,17 @@ void UBTTask_WaitCellWork::OnCellWorkCompleted(ADFCellBase* CompletedCell)
 	// 현재 이 Task가 기다리던 셀의 작업이 완료되었는지 확인
 	if (CurrentWorkingCell && CompletedCell == CurrentWorkingCell)
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s : 일이 끝났구만!"), *CurrentWorkingCell->GetName());
+		UE_LOG(LogTemp, Log, TEXT("%s : 일이 끝났구만! (%s)"), *CurrentWorkingCell->GetName(), *GetNameSafe(OwnerCompRef->GetOwner()));
 		if (CompletedCell->GetDFAbilitySystemComponent()->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")))
 		{
-			UE_LOG(LogTemp, Log, TEXT("UBTTask_WaitCellWork : 셀 이제 Free로 바꿀게!"), *CurrentWorkingCell->GetName());
+			UE_LOG(LogTemp, Log, TEXT("UBTTask_WaitCellWork : 셀 이제 Free로 바꿀게! (%s)"), *CurrentWorkingCell->GetName(), *GetNameSafe(OwnerCompRef->GetOwner()));
 		}
 
 		FinishLatentTask(*OwnerCompRef, EBTNodeResult::Succeeded);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OnCellWorkCompleted Failed. (%s != %s)"), *GetNameSafe(CompletedCell), *GetNameSafe(CurrentWorkingCell));
 	}
 }
 

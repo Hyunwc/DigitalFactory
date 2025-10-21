@@ -41,11 +41,13 @@ void UDFGA_CombineTire::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		{
 			TargetLocation = TargetVehicle->Chassis->GetSocketLocation("LeftFrontSocket");
 			SocketName = FName("LeftFrontSocket");
+			SocketTagKey = FGameplayTag::RequestGameplayTag("Vehicle.Tire.Front.Left");
 		}
 		else if (Owner->TypeTag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Right")))
 		{
 			TargetLocation = TargetVehicle->Chassis->GetSocketLocation("RightFrontSocket");
 			SocketName = FName("RightFrontSocket");
+			SocketTagKey = FGameplayTag::RequestGameplayTag("Vehicle.Tire.Front.Right");
 		}
 	}
 	else if (Owner->PhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.CombinePhase.Back")))
@@ -54,11 +56,13 @@ void UDFGA_CombineTire::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		{
 			TargetLocation = TargetVehicle->Chassis->GetSocketLocation("LeftBackSocket");
 			SocketName = FName("LeftBackSocket");
+			SocketTagKey = FGameplayTag::RequestGameplayTag("Vehicle.Tire.Back.Left");
 		}
 		else if (Owner->TypeTag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Right")))
 		{
 			TargetLocation = TargetVehicle->Chassis->GetSocketLocation("RightBackSocket");
 			SocketName = FName("RightBackSocket");
+			SocketTagKey = FGameplayTag::RequestGameplayTag("Vehicle.Tire.Back.Right");
 		}
 	}
 
@@ -82,6 +86,7 @@ void UDFGA_CombineTire::OnEndMoveFinished(FTransform NewTransform)
 		{
 			ADFTire* Tire = Cast<ADFTire>(Owner->TargetActor);
 			Tire->bCombined = true;
+			TargetVehicle->TireCombineMap.FindOrAdd(SocketTagKey) = true;
 			UE_LOG(LogTemp, Log, TEXT("GA_Combine : 부착했어!!"));
 		}
 		else

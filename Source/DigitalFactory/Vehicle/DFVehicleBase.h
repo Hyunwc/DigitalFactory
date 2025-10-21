@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "DFVehicleBase.generated.h"
 
 class USceneComponent;
@@ -24,6 +25,10 @@ public:
 	// 차체
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
 	UStaticMeshComponent* Chassis;
+
+	// 바퀴가 전부 결합됐는지 체크할 컨테이너<Key : 태그(Vehicle.Type.앞or뒤.왼or오), Value : 결합됐는지?>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vehicle")
+	TMap<FGameplayTag, bool> TireCombineMap;
 
 public:
 	UFUNCTION(BlueprintCallable)

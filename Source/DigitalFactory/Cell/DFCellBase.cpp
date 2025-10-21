@@ -47,7 +47,8 @@ void ADFCellBase::BeginPlay()
 
 UAbilitySystemComponent* ADFCellBase::GetAbilitySystemComponent() const
 {
-	return ASC;
+	//return ASC;
+	return DFASC;
 }
 
 UDFAbilitySystemComponent* ADFCellBase::GetDFAbilitySystemComponent() const
