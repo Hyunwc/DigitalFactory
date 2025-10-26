@@ -10,6 +10,7 @@
 #include "Engine/TargetPoint.h"
 #include "GameplayTagContainer.h"
 #include "GAS/DFAbilitySystemComponent.h"
+#include "Robot/DFAGV.h"
 
 ADFAIController::ADFAIController()
 {
@@ -34,6 +35,12 @@ void ADFAIController::RunAI()
 	{
 		// 복귀장소 저장
 		Blackboard->SetValueAsVector(BBKEY_HOMEPOS, GetPawn()->GetActorLocation());
+		
+		ADFAGV* CurrentAGV = Cast<ADFAGV>(GetPawn());
+		if (CurrentAGV)
+		{
+			CurrentAGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply"));
+		}
 
 		// 다음 작업할 단계 미리 설정
 		//Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());

@@ -8,6 +8,9 @@
 #include "DFAGVManager.generated.h"
 
 class ADFAGV;
+struct FDFOrderSpec;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnIdleAGVCountDelegate, int32, IdleAGVCount);
 
 UCLASS()
 class DIGITALFACTORY_API ADFAGVManager : public AActor
@@ -32,8 +35,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AGV")
 	float WorkDuration;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnIdleAGVCountDelegate OnIdleAGVCount;
+
 public:
 	// 테스트용 함수
 	UFUNCTION(CallInEditor, Category = "AGV")
 	void CommandWork();
+
+	UFUNCTION(BlueprintCallable, Category = "AGV")
+	void StartOrder(FDFOrderSpec Spec);
+
+	UFUNCTION(BlueprintCallable, Category = "AGV")
+	int32 GetIdleAGVCount();
 };

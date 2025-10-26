@@ -39,4 +39,7 @@ protected:
 	// 차량에게 입힐 머티리얼 인스턴스
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
 	UMaterialInstance* Paint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Car")
+	TMap<FLinearColor, UMaterialInstance*> OrderColorMap;
 };
