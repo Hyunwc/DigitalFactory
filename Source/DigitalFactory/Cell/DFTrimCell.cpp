@@ -64,6 +64,8 @@ void ADFTrimCell::OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished)
 	UE_LOG(LogTemp, Warning, TEXT("트림셀 : 수고했어 로봇암아"));
 
 	UE_LOG(LogTemp, Log, TEXT("트림셀 : 여기 들어오니?"));
+	this->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+
 	OnCellWorkComplete.Broadcast(this);
 	if (bLeftRobotArmFinished && bRightRobotArmFinished)
 	{
