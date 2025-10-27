@@ -17,6 +17,7 @@ class UDFGA_RobotArmMasterAbility;
 class ADFAGV;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRobotArmFinishedDelegate, FGameplayTag, OwnerTag, bool, bFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnReadyTireSpawn, FGameplayTag, OwnerTag);
 
 UCLASS()
 class DIGITALFACTORY_API ADFRobotArm : public APawn
@@ -84,6 +85,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnRobotArmFinishedDelegate OnRobotArmFinished;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnReadyTireSpawn OnReadyTireSpawn;
+
 public:
 	// ASC
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
@@ -132,4 +136,8 @@ public:
 
 	UFUNCTION()
 	void HandleAbilityFinished(FGameplayTag OwnerTag, bool bFinished);
+
+	// 타이어를 어태치 했다는 것을 알림 받을 콜백
+	UFUNCTION()
+	void HandleAttachFinished();
 };

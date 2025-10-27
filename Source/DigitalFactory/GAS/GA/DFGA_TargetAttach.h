@@ -10,6 +10,7 @@ class UControlRigComponent;
 class AActor;
 class ADFRobotArm;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTargetAttachSucceed);
 /**
  * 
  */
@@ -47,6 +48,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	ADFRobotArm* Owner;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnTargetAttachSucceed OnTargetAttachSucceed;
 
 public:
 	UFUNCTION(BlueprintCallable)

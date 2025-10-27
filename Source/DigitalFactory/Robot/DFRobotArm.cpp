@@ -12,6 +12,7 @@
 #include "ControlRig.h"
 #include "RigVMHost.h"
 #include "GAS/GA/DFGA_RobotArmMasterAbility.h"
+#include "GAS/GA/DFGA_TargetAttach.h"
 
 ADFRobotArm::ADFRobotArm()
 {
@@ -86,6 +87,26 @@ UDFAbilitySystemComponent* ADFRobotArm::GetDFAbilitySystemComponent()
 
 void ADFRobotArm::StartRobotArmAbility()
 {
+	if (DFASC && TargetAttachSpecHandle.IsValid())
+	{
+		// 스펙 찾고
+		FGameplayAbilitySpec* Spec = DFASC->FindAbilitySpecFromHandle(TargetAttachSpecHandle);
+		if (Spec && Spec->GetPrimaryInstance())
+		{
+			if (UDFGA_TargetAttach* AttachGA = Cast<UDFGA_TargetAttach>(Spec->GetPrimaryInstance()))
+			{
+				AttachGA->OnTargetAttachSucceed.AddDynamic(this, &ADFRobotArm::HandleAttachFinished);
+				if (AttachGA->OnTargetAttachSucceed.IsAlreadyBound(this, &ADFRobotArm::HandleAttachFinished))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("로봇암 : 타겟 델리게이트 바인딩 성공"));
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("로봇암 : 타겟 델리게이트 바인딩 실패"));
+				}
+			}
+		}
+	}
 	if (DFASC && MasterSpecHandle.IsValid())
 	{
 		bool bActivated = DFASC->TryActivateAbility(MasterSpecHandle);
@@ -139,5 +160,11 @@ void ADFRobotArm::HandleAbilityFinished(FGameplayTag OwnerTag, bool bFinished)
 {
 	UE_LOG(LogTemp, Warning, TEXT("로봇암 : 마스터 어빌리티에게 끝났단 신호받음. 다음 구독자에게 보냄"));
 	OnRobotArmFinished.Broadcast(OwnerTag, bFinished);
+}
+
+void ADFRobotArm::HandleAttachFinished()
+{
+	// 타이어 준비해놓으라고 신호를 보냄
+	OnReadyTireSpawn.Broadcast(TypeTag);
 }
 

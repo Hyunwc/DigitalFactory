@@ -39,4 +39,15 @@ public:
 public:
 	UFUNCTION()
 	void OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished);
+
+	// 블루프린트에서 구현해서 타이어 결합 어빌리티가 C++에서 호출함
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void LeftTireSpawn();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void RightTireSpawn();
+
+	// 타이어 스폰을 준비해라고 알림받을 콜백
+	UFUNCTION()
+	void HandleTireSpawn(FGameplayTag Tag);
 };

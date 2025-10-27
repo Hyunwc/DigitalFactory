@@ -67,6 +67,9 @@ void UDFGA_TargetAttach::OnAttachStart(FTransform NewTransform)
 			);
 		}
 	}
+
+	OnTargetAttachSucceed.Broadcast();
+
 	if (Owner)
 	{
 		Owner->NotifySubAbilityFinished();

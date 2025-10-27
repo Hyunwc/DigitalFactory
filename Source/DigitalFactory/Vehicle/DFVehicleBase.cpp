@@ -13,6 +13,18 @@ ADFVehicleBase::ADFVehicleBase()
 
 	Chassis = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Chassis"));
 	Chassis->SetupAttachment(Root);
+
+	LeftFrontTire = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftFrontTire"));
+	LeftFrontTire->SetupAttachment(Chassis);
+
+	LeftBackTire = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftBackTire"));
+	LeftBackTire->SetupAttachment(Chassis);
+
+	RightFrontTire = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightFrontTire"));
+	RightFrontTire->SetupAttachment(Chassis);
+
+	RightBackTire = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightBackTire"));
+	RightBackTire->SetupAttachment(Chassis);
 }
 
 
