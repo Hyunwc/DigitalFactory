@@ -8,6 +8,7 @@
 #include "DFRobotArm.generated.h"
 
 class USceneComponent;
+class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UControlRigComponent;
 class UDFAbilitySystemComponent;
@@ -39,6 +40,14 @@ public:
 	// 로봇암의 루트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* Root;
+
+	// 로봇암의 이펙터의 씬루트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* EffectorScene;
+
+	// 시각적 효과를 위한 타이어 메시(이펙터 씬에 부착되어야함)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UStaticMeshComponent* PreviewTire;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* Skeletal;

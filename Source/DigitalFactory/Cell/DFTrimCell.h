@@ -8,6 +8,7 @@
 #include "DFTrimCell.generated.h"
 
 class ADFRobotArm;
+class UStaticMeshComponent;
 /**
  * 
  */
@@ -35,6 +36,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RobotArm")
 	bool bLeftRobotArmFinished;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Car")
+	UStaticMeshComponent* LeftTireMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Car")
+	UStaticMeshComponent* RightTireMesh;
 
 public:
 	UFUNCTION()

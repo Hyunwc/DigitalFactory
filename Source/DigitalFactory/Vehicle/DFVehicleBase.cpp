@@ -25,6 +25,11 @@ ADFVehicleBase::ADFVehicleBase()
 
 	RightBackTire = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightBackTire"));
 	RightBackTire->SetupAttachment(Chassis);
+
+	TireVisibleMap.Add(FGameplayTag::RequestGameplayTag("Vehicle.Tire.Front.Left"), LeftFrontTire);
+	TireVisibleMap.Add(FGameplayTag::RequestGameplayTag("Vehicle.Tire.Back.Left"), LeftBackTire);
+	TireVisibleMap.Add(FGameplayTag::RequestGameplayTag("Vehicle.Tire.Front.Right"), RightFrontTire);
+	TireVisibleMap.Add(FGameplayTag::RequestGameplayTag("Vehicle.Tire.Back.Right"), RightBackTire);
 }
 
 

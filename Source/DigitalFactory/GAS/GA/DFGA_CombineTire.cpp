@@ -81,18 +81,25 @@ void UDFGA_CombineTire::OnEndMoveFinished(FTransform NewTransform)
 
 	if (TargetVehicle && Owner)
 	{
-		if (Owner->TargetActor->AttachToComponent(TargetVehicle->Chassis,
-			FAttachmentTransformRules::KeepWorldTransform, SocketName))
-		{
-			ADFTire* Tire = Cast<ADFTire>(Owner->TargetActor);
-			Tire->bCombined = true;
-			TargetVehicle->TireCombineMap.FindOrAdd(SocketTagKey) = true;
-			UE_LOG(LogTemp, Log, TEXT("GA_Combine : 부착했어!!"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Log, TEXT("GA_Combine : 부착실패!!"));
-		}
+		// 타이어 해당위치 결합상태를 true로
+		TargetVehicle->TireCombineMap.FindOrAdd(SocketTagKey) = true;
+		// 타이어 해당위치 메시 활성화
+		TargetVehicle->TireVisibleMap.FindOrAdd(SocketTagKey)->SetVisibility(true);
+		// 오너(로봇암)의 시각화를 위한 타이어 다시 비활성화
+		Owner->PreviewTire->SetVisibility(false);
+		UE_LOG(LogTemp, Log, TEXT("GA_Combine : 부착했어!!"));
+		//if (Owner->TargetActor->AttachToComponent(TargetVehicle->Chassis,
+		//	FAttachmentTransformRules::KeepWorldTransform, SocketName))
+		//{
+		//	ADFTire* Tire = Cast<ADFTire>(Owner->TargetActor);
+		//	Tire->bCombined = true;
+		//	TargetVehicle->TireCombineMap.FindOrAdd(SocketTagKey) = true;
+		//	UE_LOG(LogTemp, Log, TEXT("GA_Combine : 부착했어!!"));
+		//}
+		//else
+		//{
+		//	UE_LOG(LogTemp, Log, TEXT("GA_Combine : 부착실패!!"));
+		//}
 	}
 
 	if (Owner)

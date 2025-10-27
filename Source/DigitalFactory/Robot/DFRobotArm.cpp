@@ -3,6 +3,7 @@
 
 #include "Robot/DFRobotArm.h"
 #include "Components/SceneComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "ControlRigComponent.h"
@@ -16,13 +17,20 @@
 
 ADFRobotArm::ADFRobotArm()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	AIControllerClass = ADFRobotArmAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
+	
+	EffectorScene = CreateDefaultSubobject<USceneComponent>(TEXT("EffectorScene"));
+	EffectorScene->SetupAttachment(Root);
+
+	PreviewTire = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tire"));
+	PreviewTire->SetupAttachment(EffectorScene);
+	PreviewTire->SetVisibility(false);
 
 	Skeletal = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Skeletal"));
 	Skeletal->SetupAttachment(Root);
@@ -48,6 +56,11 @@ void ADFRobotArm::BeginPlay()
 	// 컨트롤릭 스켈레탈에 결합
 	ControlRigComponent->AddMappedCompleteSkeletalMesh(Skeletal);
 
+	FTransform EffectorWorldTransform = ControlRigComponent->GetControlTransform(EndEffectorName, EControlRigComponentSpace::WorldSpace);
+
+	// 이펙터 씬의 트랜스폼으로 설정
+	EffectorScene->SetWorldTransform(EffectorWorldTransform);
+
 	if (DFASC)
 	{
 		MasterSpecHandle = DFASC->GiveAbility(FGameplayAbilitySpec(RobotArmMasterAbility, 1, 0, this));
@@ -72,6 +85,13 @@ void ADFRobotArm::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (ControlRigComponent)
+	{
+		FTransform EffectorWorldTransform = ControlRigComponent->GetControlTransform(EndEffectorName, EControlRigComponentSpace::WorldSpace);
+
+		// 이펙터 씬의 트랜스폼으로 설정
+		EffectorScene->SetWorldTransform(EffectorWorldTransform);
+	}
 }
 
 void ADFRobotArm::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
