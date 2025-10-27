@@ -58,14 +58,18 @@ void UDFGA_TargetAttach::OnAttachStart(FTransform NewTransform)
 
 	if (TargetActor && Owner)
 	{
-		if (USkeletalMeshComponent* OwnerSkeletal = Owner->Skeletal)
-		{
-			TargetActor->AttachToComponent(
-				OwnerSkeletal,
-				FAttachmentTransformRules::KeepWorldTransform,
-				TEXT("GrabSocket")
-			);
-		}
+		// 이펙터 씬에 부착되어 있는 프리뷰 메시 활성화
+		Owner->PreviewTire->SetVisibility(true); 
+
+		// 기존 어태치하던 코드 
+		//if (USkeletalMeshComponent* OwnerSkeletal = Owner->Skeletal)
+		//{
+		//	TargetActor->AttachToComponent(
+		//		OwnerSkeletal,
+		//		FAttachmentTransformRules::KeepWorldTransform,
+		//		TEXT("GrabSocket")
+		//	);
+		//}
 	}
 
 	OnTargetAttachSucceed.Broadcast();

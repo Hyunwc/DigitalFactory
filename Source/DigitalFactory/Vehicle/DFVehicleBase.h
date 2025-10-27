@@ -42,6 +42,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vehicle")
 	TMap<FGameplayTag, bool> TireCombineMap;
 
+	// 실제 활성화 시킬 타이어 맵
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vehicle")
+	TMap<FGameplayTag, UStaticMeshComponent*> TireVisibleMap;
+
+
 public:
 	UFUNCTION(BlueprintCallable)
 	UStaticMeshComponent* GetChassisMesh() { return Chassis; }

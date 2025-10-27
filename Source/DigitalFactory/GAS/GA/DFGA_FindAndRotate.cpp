@@ -54,16 +54,19 @@ void UDFGA_FindAndRotate::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
-
-	for (AActor* Target : OverlappingActors)
-	{
-		ADFTire* Tire = Cast<ADFTire>(Target);
-		if (!Tire->bCombined)
-		{
-			TargetActor = Tire;
-		}
-	}
-	//TargetActor = OverlappingActors[0];
+	UE_LOG(LogTemp, Log, TEXT("GA_Find : 찾은 액터 개수 %d개입니다"), OverlappingActors.Num());
+	//for (AActor* Target : OverlappingActors)
+	//{
+	//	TargetActor = Target;
+	//	// 찾은 액터중에서 GrabTire 태그인것만(게임플레이 태그 x)
+	//	//ADFTire* Tire = Cast<ADFTire>(Target);
+	//	//if (!Tire->bCombined)
+	//	//{
+	//	//	TargetActor = Tire;
+	//	//}
+	//}
+	TargetActor = OverlappingActors[0];
+	UE_LOG(LogTemp, Log, TEXT("GA_Find : 감지한 액터 이름 개수 %s"), *TargetActor->GetName());
 	Owner->TargetActor = TargetActor;
 	TargetLocation = TargetActor->GetActorLocation();
 

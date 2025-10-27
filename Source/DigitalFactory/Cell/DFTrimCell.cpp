@@ -5,12 +5,17 @@
 #include "GAS/GA/DFGA_SimpleTimerWork.h"
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Robot/DFRobotArm.h"
+#include "Components/StaticMeshComponent.h"
 
 ADFTrimCell::ADFTrimCell()
 {
 	CellWorkAbilityClass = UDFGA_SimpleTimerWork::StaticClass();
 	bRightRobotArmFinished = false;
 	bLeftRobotArmFinished = false;
+	LeftTireMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftTireMesh"));
+	LeftTireMesh->SetupAttachment(Root);
+	RightTireMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightTireMesh"));
+	RightTireMesh->SetupAttachment(Root);
 }
 
 void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
@@ -77,13 +82,13 @@ void ADFTrimCell::OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished)
 
 void ADFTrimCell::HandleTireSpawn(FGameplayTag Tag)
 {
-	UE_LOG(LogTemp, Log, TEXT("트림셀 : 타이어 스폰시켜놓을게!"));
-	if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Left")))
-	{
-		LeftTireSpawn();
-	}
-	else if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Right")))
-	{
-		RightTireSpawn();
-	}
+	//UE_LOG(LogTemp, Log, TEXT("트림셀 : 타이어 스폰시켜놓을게!"));
+	//if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Left")))
+	//{
+	//	LeftTireSpawn();
+	//}
+	//else if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Right")))
+	//{
+	//	RightTireSpawn();
+	//}
 }
