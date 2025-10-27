@@ -26,6 +26,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
 	UStaticMeshComponent* Chassis;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	UStaticMeshComponent* LeftFrontTire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	UStaticMeshComponent* LeftBackTire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	UStaticMeshComponent* RightFrontTire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	UStaticMeshComponent* RightBackTire;
+
 	// 바퀴가 전부 결합됐는지 체크할 컨테이너<Key : 태그(Vehicle.Type.앞or뒤.왼or오), Value : 결합됐는지?>
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vehicle")
 	TMap<FGameplayTag, bool> TireCombineMap;

@@ -22,6 +22,9 @@ void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
 	{
 		UE_LOG(LogTemp, Log, TEXT("트림셀 : 구독할게요"));
 		LeftRobotArm->OnRobotArmFinished.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
+		LeftRobotArm->OnReadyTireSpawn.AddDynamic(this, &ADFTrimCell::HandleTireSpawn);
+		//RightRobotArm->OnRobotArmFinished.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
+		RightRobotArm->OnReadyTireSpawn.AddDynamic(this, &ADFTrimCell::HandleTireSpawn);
 	}
 
 	LeftRobotArm->StartRobotArmAbility();
@@ -69,5 +72,18 @@ void ADFTrimCell::OnFinishTrimCellWork(FGameplayTag Tag, bool bFinished)
 	OnCellWorkComplete.Broadcast(this);
 	if (bLeftRobotArmFinished && bRightRobotArmFinished)
 	{
+	}
+}
+
+void ADFTrimCell::HandleTireSpawn(FGameplayTag Tag)
+{
+	UE_LOG(LogTemp, Log, TEXT("트림셀 : 타이어 스폰시켜놓을게!"));
+	if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Left")))
+	{
+		LeftTireSpawn();
+	}
+	else if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("RobotArm.Type.Right")))
+	{
+		RightTireSpawn();
 	}
 }
