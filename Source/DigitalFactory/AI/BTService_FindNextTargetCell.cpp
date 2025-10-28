@@ -165,6 +165,10 @@ FGameplayTag UBTService_FindNextTargetCell::GetCellTypeTagsForPhase(const FGamep
 	{
 		return FGameplayTag::RequestGameplayTag("Cell.Type.Inspection");
 	}
+	else if (AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Load")))
+	{
+		return FGameplayTag::RequestGameplayTag("Cell.Type.Load");
+	}
 	
 	return FGameplayTag();
 }

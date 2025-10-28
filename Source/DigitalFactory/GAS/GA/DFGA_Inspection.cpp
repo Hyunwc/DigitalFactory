@@ -45,9 +45,6 @@ void UDFGA_Inspection::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 
 	UE_LOG(LogTemp, Log, TEXT("GA_Inspection : 문제 없네요~"));
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-
-	TargetVehicle->Destroy();
-	TargetAGV->AttachVehicle = nullptr;
 }
 
 void UDFGA_Inspection::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)

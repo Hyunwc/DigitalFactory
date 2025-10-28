@@ -19,7 +19,7 @@ ADFSupplyCell::ADFSupplyCell()
 	Spline->SetupAttachment(Root);
 
 	Distance = 0.0f;
-	MoveSpeed = 600.0f;
+	MoveSpeed = 100.0f;
 }
 
 void ADFSupplyCell::BeginPlay()
@@ -39,7 +39,7 @@ void ADFSupplyCell::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Log, TEXT("SupplyCell : 차체 옮기기 시작할게!"));
 	if (SupplyVehicle)
 	{
-		const float SplineLength = Spline->GetSplineLength();
+		//const float SplineLength = Spline->GetSplineLength();
 
 		// 거리 업데이트
 		Distance += MoveSpeed * DeltaTime;
