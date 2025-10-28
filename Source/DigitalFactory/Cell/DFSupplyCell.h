@@ -25,8 +25,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 	virtual void StartWork(ADFAGV* TargetAGV) override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
