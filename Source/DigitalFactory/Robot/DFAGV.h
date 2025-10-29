@@ -13,6 +13,11 @@ class UFloatingPawnMovement;
 class UDFAbilitySystemComponent;
 class UGameplayAbility;
 class ADFVehicleBase;
+class ADFCellBase;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVPhase, FGameplayTag, NewPhaseTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVCurrentCell, ADFCellBase*, CurrentCell);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVOrderColorDelegate, FLinearColor, NewColor);
 
 UCLASS()
 class DIGITALFACTORY_API ADFAGV : public APawn
@@ -62,7 +67,33 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
 	ADFVehicleBase* AttachVehicle;
 
+	// 현재 AGV가 작업 중인 셀
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cell")
+	ADFCellBase* CurrentCell;
+
 	// 할당받은 주문 색상
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Order")
 	FLinearColor OrderColor;
+
+public:
+	// AGVPhase가 변경됐음을 알릴 델리게이트
+	UPROPERTY(BlueprintAssignable, Category = "AGV")
+	FOnChangeAGVPhase OnChangeAGVPhase;
+
+	// 현재 작업 중인 셀을 알리는 델리게이트
+	UPROPERTY(BlueprintAssignable)
+	FOnChangeAGVCurrentCell OnChangeAGVCurrentCell;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnChangeAGVOrderColorDelegate OnChangeAGVOrderColor;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetAGVPhaseTag(FGameplayTag NewPhaseTag);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentCell(ADFCellBase* NewCell);
+
+	UFUNCTION(BlueprintCallable)
+	void SetOrderColor(FLinearColor NewOrderColor);
 };

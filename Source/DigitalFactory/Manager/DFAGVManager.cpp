@@ -64,8 +64,7 @@ void ADFAGVManager::StartOrder(FDFOrderSpec Spec)
 		if (AGV && AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Idle")))
 		{
 			// AGV에게 색상 할당
-			AGV->OrderColor = Spec.OrderColor;
-
+			AGV->SetOrderColor(Spec.OrderColor);
 			// 컨트롤러 구동
 			if (ADFAIController* AGVAICon = Cast<ADFAIController>(AGV->GetController()))
 			{

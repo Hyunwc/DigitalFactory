@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTask_SetAGVPhase::ExecuteTask(UBehaviorTreeComponent& Own
 	//BlackboardComp->SetValueAsName(AGVPhaseKeyName, NewAGVPhaseTagName);
 
 	ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
-	AGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(NewAGVPhaseTagName);
+	AGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag(NewAGVPhaseTagName));
 
 	return EBTNodeResult::Succeeded;
 }
