@@ -8,6 +8,7 @@
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "Vehicle/DFVehicleBase.h"
+#include "Cell/DFCellBase.h"
 
 ADFAGV::ADFAGV()
 {
@@ -60,5 +61,26 @@ void ADFAGV::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 UDFAbilitySystemComponent* ADFAGV::GetDFAbilitySystemComponent() const
 {
 	return DFASC;
+}
+
+void ADFAGV::SetAGVPhaseTag(FGameplayTag NewPhaseTag)
+{
+	AGVPhaseTag = NewPhaseTag;
+
+	OnChangeAGVPhase.Broadcast(AGVPhaseTag);
+}
+
+void ADFAGV::SetCurrentCell(ADFCellBase* NewCell)
+{
+	CurrentCell = NewCell;
+
+	OnChangeAGVCurrentCell.Broadcast(CurrentCell);
+}
+
+void ADFAGV::SetOrderColor(FLinearColor NewOrderColor)
+{
+	OrderColor = NewOrderColor;
+
+	OnChangeAGVOrderColor.Broadcast(OrderColor);
 }
 

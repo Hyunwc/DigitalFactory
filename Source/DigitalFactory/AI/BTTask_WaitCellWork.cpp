@@ -35,13 +35,17 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 		UE_LOG(LogTemp, Error, TEXT("BTTask_WaitCell : No Target!"));
 		return EBTNodeResult::Failed;
 	}
+	ADFAGV* Owner = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
 
 	// 현재 작업 중인 Cell에게 어떤 AGV가 작업중인지 보낸다(어빌리티에서도 사용 및 다른곳에서도 사용할 수 있게)
-	CurrentWorkingCell->WorkingAGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+	//CurrentWorkingCell->WorkingAGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+	CurrentWorkingCell->WorkingAGV = Owner;
+
+	Owner->SetCurrentCell(CurrentWorkingCell);
 
 	// 셀의 작업 완료 델리게이트 함수 바인딩
 	CurrentWorkingCell->OnCellWorkComplete.AddDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
-
+	
 	// Working으로 변경
 	if (CurrentWorkingCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
 	{
@@ -64,6 +68,7 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 
 void UBTTask_WaitCellWork::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
+	ADFAGV* Owner = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
 	// Task가 종료될 때 델리게이트 바인딩 해제
 	if (CurrentWorkingCell)
 	{
@@ -76,7 +81,7 @@ void UBTTask_WaitCellWork::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uin
 
 		// 참조 해제
 		CurrentWorkingCell = nullptr;
-
+		Owner->CurrentCell = nullptr;
 		Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 	}
 }
