@@ -18,6 +18,9 @@ class ADFAGV;
 
 // 셀에서 작업이 완료되었음을 알리는 델리게이트 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCellWorkComplete, ADFCellBase*, CompleteCell);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeCellStateTag, FGameplayTag, NewStateTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeReservedAGV, ADFAGV*, NewAGV);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeWorkingAGV, ADFAGV*, NewAGV);
 /**
  * 
  */
@@ -65,17 +68,37 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
 	FGameplayTag CellTypeTag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS")
+	FGameplayTag CellStateTag;
+
 	// 현재 셀에 예약된 AGV를 추척하기 위한 변수
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ADFAGV* ReservedAGV;
 
 	// 현재 이 셀에서 작업중인 AGV
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	ADFAGV* WorkingAGV;
 
+	// 셀을 정렬시키기 위한 우선순위
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Cell")
+	int32 CellPriority;
+
+// 델리게이트 Section
+public:
 	// 이 셀의 작업이 완료됐음을 알릴 델리게이트
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnCellWorkComplete OnCellWorkComplete;
+
+	// 이 셀의 작업이 완료됐음을 알릴 델리게이트
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnChangeCellStateTag OnChangeCellStateTag;
+
+	// 이 셀을 예약한 AGV가 변경됐음을 알릴 델리게이트
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnChangeReservedAGV OnChangeReservedAGV;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnChangeWorkingAGV OnChangeWorkingAGV;
 
 public:
 	// AGV에게 작업 시작을 요청받을 함수
@@ -88,4 +111,14 @@ public:
 
 	UFUNCTION()
 	FGameplayTag GetCellTypeTag() const { return CellTypeTag; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetCellStateTag(FGameplayTag NewTag);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCellReservedAGV(ADFAGV* NewAGV);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCellWorkingAGV(ADFAGV* NewAGV);
+
 };

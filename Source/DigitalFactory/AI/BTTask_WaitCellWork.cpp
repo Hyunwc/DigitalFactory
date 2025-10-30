@@ -39,9 +39,14 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	// 현재 작업 중인 Cell에게 어떤 AGV가 작업중인지 보낸다(어빌리티에서도 사용 및 다른곳에서도 사용할 수 있게)
 	//CurrentWorkingCell->WorkingAGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
-	CurrentWorkingCell->WorkingAGV = Owner;
-
+	//CurrentWorkingCell->WorkingAGV = Owner;
+	
+	// 셀 작업자 변경 및 예약 해제
+	CurrentWorkingCell->SetCellWorkingAGV(Owner);
+	CurrentWorkingCell->SetCellReservedAGV(nullptr);
+	// Owner(AGV)가 작업중인 셀 변경
 	Owner->SetCurrentCell(CurrentWorkingCell);
+
 
 	// 셀의 작업 완료 델리게이트 함수 바인딩
 	CurrentWorkingCell->OnCellWorkComplete.AddDynamic(this, &UBTTask_WaitCellWork::OnCellWorkCompleted);
@@ -51,6 +56,8 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 	{
 		UE_LOG(LogTemp, Log, TEXT("BTTask_WaitCellWork : 셀 Working으로 변경! (%s)"), *GetNameSafe(OwnerCompRef->GetOwner()));
 	}
+
+	CurrentWorkingCell->SetCellStateTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
 	// 셀 작업 시작 호출
 	CurrentWorkingCell->StartWork(Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn()));
 
@@ -81,7 +88,8 @@ void UBTTask_WaitCellWork::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uin
 
 		// 참조 해제
 		CurrentWorkingCell = nullptr;
-		Owner->CurrentCell = nullptr;
+		//Owner->CurrentCell = nullptr;
+		Owner->SetCurrentCell(nullptr);
 		Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 	}
 }
@@ -96,6 +104,9 @@ void UBTTask_WaitCellWork::OnCellWorkCompleted(ADFCellBase* CompletedCell)
 		{
 			UE_LOG(LogTemp, Log, TEXT("UBTTask_WaitCellWork : 셀 이제 Free로 바꿀게! (%s)"), *CurrentWorkingCell->GetName(), *GetNameSafe(OwnerCompRef->GetOwner()));
 		}
+
+		CompletedCell->SetCellStateTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+		CompletedCell->SetCellWorkingAGV(nullptr);
 
 		FinishLatentTask(*OwnerCompRef, EBTNodeResult::Succeeded);
 	}

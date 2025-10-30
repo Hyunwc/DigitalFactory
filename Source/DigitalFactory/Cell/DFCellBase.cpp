@@ -26,6 +26,8 @@ ADFCellBase::ADFCellBase()
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFS"));
+
+	CellStateTag = FGameplayTag::RequestGameplayTag("Cell.State.Free");
 }
 
 void ADFCellBase::BeginPlay()
@@ -58,6 +60,27 @@ UDFAbilitySystemComponent* ADFCellBase::GetDFAbilitySystemComponent() const
 
 void ADFCellBase::StartWork(ADFAGV* TargetAGV)
 {
+}
+
+void ADFCellBase::SetCellStateTag(FGameplayTag NewTag)
+{
+	CellStateTag = NewTag;
+
+	OnChangeCellStateTag.Broadcast(CellStateTag);
+}
+
+void ADFCellBase::SetCellReservedAGV(ADFAGV* NewAGV)
+{
+	ReservedAGV = NewAGV;
+
+	OnChangeReservedAGV.Broadcast(ReservedAGV);
+}
+
+void ADFCellBase::SetCellWorkingAGV(ADFAGV* NewAGV)
+{
+	WorkingAGV = NewAGV;
+
+	OnChangeWorkingAGV.Broadcast(WorkingAGV);
 }
 
 

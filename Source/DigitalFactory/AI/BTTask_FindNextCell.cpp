@@ -69,6 +69,8 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		{
 			//CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
 			CellASC->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
+			MoveToCell->SetCellStateTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
+			MoveToCell->SetCellReservedAGV(AGV);
 		}
 
 		// 블랙보드 Next좌표와 참조 셀 갱신
