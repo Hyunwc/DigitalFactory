@@ -5,6 +5,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Navigation/CrowdFollowingComponent.h"
 #include "EngineUtils.h"
 #include "Cell/DFCellBase.h"
 #include "Engine/TargetPoint.h"
@@ -25,6 +26,10 @@ ADFAIController::ADFAIController()
 	{
 		BTAsset = BTAssetRef.Object;
 	}
+
+	bEnableCrowdAvoidance = false;
+	AvoidanceRangeMultiplier = 1.0f;
+	CollisionQueryRange = 500.0f;
 }
 
 void ADFAIController::RunAI()
@@ -85,6 +90,20 @@ void ADFAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	UE_LOG(LogTemp, Log, TEXT("DFAIController : 저 빙의 했어요"));
+
+	// TODO : 분석 해볼 것
+	// Crowd 그룹 설정(선택 사항)
+	if (bEnableCrowdAvoidance)
+	{
+		if (UCrowdFollowingComponent* CrowdComp = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
+		{
+			// 모든 AGV를 같은 그룹(1)으로 설정하고 서로 회피
+			CrowdComp->SetAvoidanceGroup(1);
+			CrowdComp->SetGroupsToAvoid(1);
+			CrowdComp->SetGroupsToIgnore(0);
+		}
+	}
+	//RunAI();
 	//RunAI();
 }
 
@@ -92,4 +111,31 @@ void ADFAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//// Crowd Avoidance 설정
+	if (bEnableCrowdAvoidance)
+	{
+		if (UCrowdFollowingComponent* CrowdComp = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
+		{
+			// Crowd Simulation 활성화
+			CrowdComp->SetCrowdSimulationState(ECrowdSimulationState::Enabled);
+			// 회피 품질 설정 (Good : 성능/품질 균형)
+			CrowdComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Good);
+	
+			// 회피 범위 설정
+			CrowdComp->SetCrowdAvoidanceRangeMultiplier(AvoidanceRangeMultiplier);
+			CrowdComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
+	
+			// 경로 최적화 범위
+			CrowdComp->SetCrowdPathOptimizationRange(1000.0f);
+	
+			// 분리 가중치(AGV끼리 떨어지려는 힘)
+			CrowdComp->SetCrowdSeparationWeight(2.0f);
+	
+			UE_LOG(LogTemp, Log, TEXT("DFAIController : Crowd Avoidance Enabled"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("DFAIController : Failed to get CrowdFollowingComponent"));
+		}
+	}
 }
