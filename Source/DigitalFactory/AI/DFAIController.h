@@ -7,7 +7,7 @@
 
 class UBlackboardData;
 class UBehaviorTree;
-
+class UCrowdFollowingComponent;
 /**
  * 
  */
@@ -36,4 +36,17 @@ private:
 
 	UPROPERTY()
 	UBehaviorTree* BTAsset;
+
+public:
+	//UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
+	//bool bUseCrowdFollowing = false;
+
+	UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
+	bool bEnableCrowdAvoidance = true;
+
+	UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
+	float AvoidanceRangeMultiplier = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
+	float CollisionQueryRange = 500.0f;
 };
