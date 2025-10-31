@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "GameplayTagContainer.h"
 #include "BTTask_SmoothMove.generated.h"
 
 /**

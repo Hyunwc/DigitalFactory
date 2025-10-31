@@ -9,6 +9,7 @@
 
 UBTTask_SetAGVPhase::UBTTask_SetAGVPhase()
 {
+	bCreateNodeInstance = true; // AI가 같은 메모리를 참조하지 않기 위해 개별적인 노드를 만들게 설정
 	NodeName = TEXT("Set AGV Phase");
 	AGVPhaseKeyName = BBKEY_CURRENTPHASE;
 }
