@@ -4,6 +4,7 @@
 #include "AI/BTTask_SmoothMove.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Robot/DFAGV.h"
 #include "DFAI.h"
 
 UBTTask_SmoothMove::UBTTask_SmoothMove()
@@ -21,9 +22,21 @@ EBTNodeResult::Type UBTTask_SmoothMove::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
-	CurrentLocation = OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
-	TargetLocation = BlackboardComp->GetValueAsVector(BBKEY_NEXTPOS);
-	
+	ADFAGV* OwnerAGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
+
+	CurrentLocation = OwnerAGV->GetActorLocation();
+
+	// 만약 AGV가 복귀중이라면 
+	if (OwnerAGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Return")))
+	{
+		TargetLocation = BlackboardComp->GetValueAsVector(BBKEY_HOMEPOS);
+	}
+	else
+	{
+		TargetLocation = BlackboardComp->GetValueAsVector(BBKEY_NEXTPOS);
+
+	}
+
 	Delta = 0.0f;
 	Duration = 0.5f;
 

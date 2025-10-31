@@ -9,3 +9,4 @@
 #define BBKEY_NEXTPOS TEXT("NextPos")
 #define BBKEY_TARGETCELL TEXT("TargetCell")
 #define BBKEY_CURRENTPHASE TEXT("CurrentPhase")
+#define BBKEY_RETURNPOS TEXT("ReturnPos")

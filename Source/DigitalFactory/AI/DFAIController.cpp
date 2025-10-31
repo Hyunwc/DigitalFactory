@@ -35,6 +35,17 @@ void ADFAIController::RunAI()
 	{
 		// 복귀장소 저장
 		Blackboard->SetValueAsVector(BBKEY_HOMEPOS, GetPawn()->GetActorLocation());
+
+		// 복귀 경로 저장
+		for (TActorIterator<ATargetPoint> It(GetWorld()); It; ++It)
+		{
+			ATargetPoint* Target = *It;
+			if (Target)
+			{
+				Blackboard->SetValueAsVector(BBKEY_RETURNPOS, Target->GetActorLocation());
+				break;
+			}
+		}
 		
 		ADFAGV* CurrentAGV = Cast<ADFAGV>(GetPawn());
 		if (CurrentAGV)
