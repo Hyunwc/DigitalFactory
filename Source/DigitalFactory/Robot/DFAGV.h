@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "GameplayTagContainer.h"
 #include "DFAGV.generated.h"
 
@@ -20,7 +20,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVCurrentCell, ADFCellBase
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVOrderColorDelegate, FLinearColor, NewColor);
 
 UCLASS()
-class DIGITALFACTORY_API ADFAGV : public APawn
+class DIGITALFACTORY_API ADFAGV : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -39,16 +39,16 @@ public:
 
 public:
 	// AGV의 루트
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* Root;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	//USceneComponent* Root;
 
 	// AGV의 시각적 표현
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* Mesh;
-
-	// 이동 로직
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	UFloatingPawnMovement* Movement;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	//UStaticMeshComponent* Mesh;
+	//
+	//// 이동 로직
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	//UFloatingPawnMovement* Movement;
 
 	// DF ASC
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")

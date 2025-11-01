@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "Vehicle/DFVehicleBase.h"
@@ -18,15 +19,23 @@ ADFAGV::ADFAGV()
 	AIControllerClass = ADFAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -20.0f), FRotator(0.0f, 0.0f, 0.0f));
+	GetMesh()->SetRelativeScale3D(FVector(2.0f, 2.0f, 1.0f));
+	
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> AGVMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/_GENERATED/wogns/SKM_AGV2.SKM_AGV2'"));
+	if (AGVMeshRef.Object)
+	{
+		GetMesh()->SetSkeletalMesh(AGVMeshRef.Object);
+	}
+	//Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	//RootComponent = Root;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(Root);
+	//Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	//Mesh->SetupAttachment(Root);
 
 	// 이동 로직 컴포넌트 설정
-	Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
-	Movement->MaxSpeed = 400.0f;
+	//Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
+	//Movement->MaxSpeed = 400.0f;
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 
