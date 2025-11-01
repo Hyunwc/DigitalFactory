@@ -60,6 +60,7 @@ void UBTTask_SmoothMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	float Alpha = FMath::Clamp(Delta / Duration, 0.0f, 1.0f);
 
 	FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLocation, Alpha);
+	NewLocation.Z = AIOwner->GetActorLocation().Z; 
 
 	AIOwner->SetActorLocation(NewLocation);
 
