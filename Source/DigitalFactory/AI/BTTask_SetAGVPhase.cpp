@@ -26,7 +26,49 @@ EBTNodeResult::Type UBTTask_SetAGVPhase::ExecuteTask(UBehaviorTreeComponent& Own
 	//BlackboardComp->SetValueAsName(AGVPhaseKeyName, NewAGVPhaseTagName);
 
 	ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
-	AGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag(NewAGVPhaseTagName));
+	
+	// Phase를 설정.
+	AGV->SetAGVPhaseTag(GetNewPhase(AGV->AGVPhaseTag));
+
+	// 만약 Home이면 State는 복귀 상태로
+	if (AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Home")))
+	{
+		AGV->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Return"));
+	}
+	// 복귀중이였을 때 로직
+	//if (AGV->AGVStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.State.Return")))
+	//{
+	//	//AGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None"));
+	//	AGV->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Idle"));
+	//	return EBTNodeResult::Succeeded;
+	//}
 
 	return EBTNodeResult::Succeeded;
+}
+
+FGameplayTag UBTTask_SetAGVPhase::GetNewPhase(FGameplayTag CurrentPhaseTag)
+{	
+	// Supply -> Flexible -> Trim -> Inspection -> Load -> Return
+	if (CurrentPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Supply")))
+	{
+		return FGameplayTag::RequestGameplayTag("AGV.Phase.Flexible");
+	}
+	else if (CurrentPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Flexible")))
+	{
+		return FGameplayTag::RequestGameplayTag("AGV.Phase.Trim");
+	}
+	else if (CurrentPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Trim")))
+	{
+		return FGameplayTag::RequestGameplayTag("AGV.Phase.Inspection");
+	}
+	else if (CurrentPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Inspection")))
+	{
+		return FGameplayTag::RequestGameplayTag("AGV.Phase.Load");
+	}
+	else if (CurrentPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Load")))
+	{
+		return FGameplayTag::RequestGameplayTag("AGV.Phase.Home");
+	}
+
+	return FGameplayTag();
 }

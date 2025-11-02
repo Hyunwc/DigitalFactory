@@ -16,6 +16,7 @@ class ADFVehicleBase;
 class ADFCellBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVPhase, FGameplayTag, NewPhaseTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVState, FGameplayTag, NewStateTag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVCurrentCell, ADFCellBase*, CurrentCell);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeAGVOrderColorDelegate, FLinearColor, NewColor);
 
@@ -63,6 +64,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS | Phase")
 	FGameplayTag AGVPhaseTag;
 
+	// AGV의 State를 나타내는 태그
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS | Phase")
+	FGameplayTag AGVStateTag;
+
 	// 현재 장착중인 차체 액터
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
 	ADFVehicleBase* AttachVehicle;
@@ -80,6 +85,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "AGV")
 	FOnChangeAGVPhase OnChangeAGVPhase;
 
+	UPROPERTY(BlueprintAssignable, Category = "AGV")
+	FOnChangeAGVState OnChangeAGVState;
+
 	// 현재 작업 중인 셀을 알리는 델리게이트
 	UPROPERTY(BlueprintAssignable)
 	FOnChangeAGVCurrentCell OnChangeAGVCurrentCell;
@@ -90,6 +98,9 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetAGVPhaseTag(FGameplayTag NewPhaseTag);
+
+	UFUNCTION(BlueprintCallable)
+	void SetAGVStateTag(FGameplayTag NewStateTag);
 
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentCell(ADFCellBase* NewCell);

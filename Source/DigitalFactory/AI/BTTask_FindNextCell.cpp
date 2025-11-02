@@ -30,9 +30,9 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 	}
 
-	// 만약 Idle이면
+	// 만약 목적지가 없다면
 	ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
-	if (AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Idle"))))
+	if (AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.None"))))
 	{
 		// Supply로 변경
 		AGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply"));

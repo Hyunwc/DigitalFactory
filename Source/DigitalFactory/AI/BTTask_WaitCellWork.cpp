@@ -58,6 +58,7 @@ EBTNodeResult::Type UBTTask_WaitCellWork::ExecuteTask(UBehaviorTreeComponent& Ow
 	}
 
 	CurrentWorkingCell->SetCellStateTag(FGameplayTag::RequestGameplayTag("Cell.State.Working"));
+	Owner->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Work"));
 	// 셀 작업 시작 호출
 	CurrentWorkingCell->StartWork(Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn()));
 

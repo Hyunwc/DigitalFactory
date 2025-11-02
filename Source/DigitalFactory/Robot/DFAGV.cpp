@@ -39,7 +39,8 @@ ADFAGV::ADFAGV()
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 
-	AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Idle"));
+	AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.None"));
+	AGVStateTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.State.Idle"));
 }
 
 void ADFAGV::BeginPlay()
@@ -77,6 +78,13 @@ void ADFAGV::SetAGVPhaseTag(FGameplayTag NewPhaseTag)
 	AGVPhaseTag = NewPhaseTag;
 
 	OnChangeAGVPhase.Broadcast(AGVPhaseTag);
+}
+
+void ADFAGV::SetAGVStateTag(FGameplayTag NewStateTag)
+{
+	AGVStateTag = NewStateTag;
+
+	OnChangeAGVState.Broadcast(AGVStateTag);
 }
 
 void ADFAGV::SetCurrentCell(ADFCellBase* NewCell)

@@ -18,6 +18,14 @@ bool UBTDecorator_HasOrder::CalculateRawConditionValue(UBehaviorTreeComponent& O
 		return false;
 	}
 
-	// Idle이 아닐때 true 반환
-	return !AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Idle"));
+	//if (AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None")))
+	//{
+	//	return false;
+	//}
+	//
+	//return true;
+
+	// 목적지가 None이 아니라는 것은 주문을 받아서 목적지가 달라졌다는 뜻.
+	return !AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None")) && 
+		!AGV->AGVStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.State.Return"));
 }

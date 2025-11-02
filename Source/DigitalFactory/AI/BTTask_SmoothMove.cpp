@@ -27,7 +27,7 @@ EBTNodeResult::Type UBTTask_SmoothMove::ExecuteTask(UBehaviorTreeComponent& Owne
 	CurrentLocation = OwnerAGV->GetActorLocation();
 
 	// 만약 AGV가 복귀중이라면 
-	if (OwnerAGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Return")))
+	if (OwnerAGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Home")))
 	{
 		TargetLocation = BlackboardComp->GetValueAsVector(BBKEY_HOMEPOS);
 	}
