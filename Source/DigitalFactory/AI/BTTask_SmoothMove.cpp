@@ -62,10 +62,32 @@ void UBTTask_SmoothMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	FVector NewLocation = FMath::Lerp(CurrentLocation, TargetLocation, Alpha);
 	NewLocation.Z = AIOwner->GetActorLocation().Z; 
 
+	// 회전 보간
+	FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal2D();
+	if (!Direction.IsNearlyZero())
+	{
+		FRotator TargetRotation = Direction.Rotation();
+		FRotator CurrentRotation = AIOwner->GetActorRotation();
+
+		FRotator NewRotation = FMath::RInterpTo(
+			CurrentRotation,
+			TargetRotation,
+			DeltaSeconds,
+			5.0f
+		);
+
+		AIOwner->SetActorRotation(NewRotation);
+	}
+
 	AIOwner->SetActorLocation(NewLocation);
 
 	if (Alpha >= 1.0f)
 	{
+		FVector FinalDirection = (TargetLocation - CurrentLocation).GetSafeNormal2D();
+		if (!FinalDirection.IsNearlyZero())
+		{
+			AIOwner->SetActorRotation(FinalDirection.Rotation());
+		}
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }
