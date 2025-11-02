@@ -52,6 +52,7 @@ void ADFAIController::RunAI()
 			}
 		}
 		
+		// 구동되었으니 목적지를 Supply로
 		ADFAGV* CurrentAGV = Cast<ADFAGV>(GetPawn());
 		if (CurrentAGV)
 		{

@@ -61,7 +61,8 @@ void ADFAGVManager::StartOrder(FDFOrderSpec Spec)
 			break;
 		}
 
-		if (AGV && AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Idle")))
+		// 대기중인 것을 찾아
+		if (AGV && AGV->AGVStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.State.Idle")))
 		{
 			// AGV에게 색상 할당
 			AGV->SetOrderColor(Spec.OrderColor);
@@ -89,7 +90,7 @@ int32 ADFAGVManager::GetIdleAGVCount()
 	
 	for (ADFAGV* AGV : AGVList)
 	{
-		if (AGV && AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Idle")))
+		if (AGV && AGV->AGVStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.State.Idle")))
 		{
 			Count++;
 		}

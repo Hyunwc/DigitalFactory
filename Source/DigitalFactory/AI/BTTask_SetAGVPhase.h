@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "BTTask_SetAGVPhase.generated.h"
 
+class ADFAGV;
 
 /**
  * 
@@ -29,4 +30,8 @@ public:
 	// 블랙보드에 새로 설정할 AGV Phase의 GameplayTag
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FName NewAGVPhaseTagName;
+
+public:
+	UFUNCTION()
+	FGameplayTag GetNewPhase(FGameplayTag CurrentPhaseTag);
 };
