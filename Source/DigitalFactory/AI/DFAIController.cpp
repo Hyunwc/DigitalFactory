@@ -56,7 +56,7 @@ void ADFAIController::RunAI()
 		ADFAGV* CurrentAGV = Cast<ADFAGV>(GetPawn());
 		if (CurrentAGV)
 		{
-			CurrentAGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply"));
+			CurrentAGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply")));
 		}
 
 		// 다음 작업할 단계 미리 설정
