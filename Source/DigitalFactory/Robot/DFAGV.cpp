@@ -27,15 +27,11 @@ ADFAGV::ADFAGV()
 	{
 		GetMesh()->SetSkeletalMesh(AGVMeshRef.Object);
 	}
-	//Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	//RootComponent = Root;
-
-	//Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	//Mesh->SetupAttachment(Root);
-
-	// 이동 로직 컴포넌트 설정
-	//Movement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
-	//Movement->MaxSpeed = 400.0f;
+	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	//GetCharacterMovement()->bOri
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 
