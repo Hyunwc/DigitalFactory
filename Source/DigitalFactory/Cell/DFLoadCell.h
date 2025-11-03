@@ -10,6 +10,7 @@ class USplineComponent;
 class ADFVehicleBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnVehicleLoadComplete);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCompleteVehicleStatus, FLinearColor, Color);
 /**
  * 
  */
@@ -42,8 +43,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
 	float MoveSpeed;
 
+	// 현재 작업이 완료된 차 현황(Pair<색상, 수량>)
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Car")
+	//TMap<FLinearColor, int32> CompleteCarMap;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnVehicleLoadComplete OnVehicleLoadComplete;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnCompleteVehicleStatus OnCompleteVehicleStatus;
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)

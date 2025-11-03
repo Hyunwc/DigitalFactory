@@ -46,6 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vehicle")
 	TMap<FGameplayTag, UStaticMeshComponent*> TireVisibleMap;
 
+	// 자신의 색상을 저장(AGV가 보급셀에서 결합되는 타이밍에 캐시)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vehicle")
+	FLinearColor Color;
 
 public:
 	UFUNCTION(BlueprintCallable)
