@@ -80,6 +80,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Order")
 	FLinearColor OrderColor;
 
+	// AGV 고유의 이름 -> AGVProgress에 이름으로 표시하기 위함
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "GAS")
+	FName AGVName;
+
 public:
 	// AGVPhase가 변경됐음을 알릴 델리게이트
 	UPROPERTY(BlueprintAssignable, Category = "AGV")

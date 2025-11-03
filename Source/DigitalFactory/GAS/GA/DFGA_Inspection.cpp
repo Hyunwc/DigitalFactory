@@ -39,12 +39,15 @@ void UDFGA_Inspection::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		if (el.Value == false)
 		{
 			UE_LOG(LogTemp, Log, TEXT("GA_Inspection : 앗 타이어 결합이 잘못됐는데요?"));
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+			K2_ActivateAbility();
+			//EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		}
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("GA_Inspection : 문제 없네요~"));
-	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+	//EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+
+	K2_ActivateAbility();
 }
 
 void UDFGA_Inspection::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
