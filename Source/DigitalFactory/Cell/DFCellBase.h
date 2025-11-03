@@ -82,6 +82,10 @@ public:
 	// 셀을 정렬시키기 위한 우선순위
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Cell")
 	int32 CellPriority;
+	
+	// 셀 이름 -> Progress에 표시하기 위함
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Cell")
+	FName CellName;
 
 // 델리게이트 Section
 public:
