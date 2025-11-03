@@ -46,6 +46,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AGV")
 	void StartOrder(FDFOrderSpec Spec);
 
+	// 델리게이트 전용
+	UFUNCTION(BlueprintCallable, Category = "AGV")
+	void RenewalIdleAGVCount();
+
+	// 읽어오기 전용
 	UFUNCTION(BlueprintCallable, Category = "AGV")
 	int32 GetIdleAGVCount();
 };

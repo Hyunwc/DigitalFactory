@@ -10,6 +10,7 @@
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Cell/DFCellBase.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
 
 UBTTask_FindNextCell::UBTTask_FindNextCell()
 {

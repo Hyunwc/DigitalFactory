@@ -78,10 +78,28 @@ void ADFAGVManager::StartOrder(FDFOrderSpec Spec)
 			}
 		}
 	}
+	
+	RenewalIdleAGVCount();
+	//int32 NewCount = GetIdleAGVCount();
+	//// 현재 대기중인 차량의 수를 보냄
+	//OnIdleAGVCount.Broadcast(NewCount);
+}
 
-	int32 NewCount = GetIdleAGVCount();
-	// 현재 대기중인 차량의 수를 보냄
-	OnIdleAGVCount.Broadcast(NewCount);
+void ADFAGVManager::RenewalIdleAGVCount()
+{
+	int32 Count = 0;
+
+	for (ADFAGV* AGV : AGVList)
+	{
+		if (AGV && AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None")))
+		{
+			Count++;
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AGVManager : 대기중인 AGV는 %d 대입니다"), Count);
+
+	OnIdleAGVCount.Broadcast(Count);
 }
 
 int32 ADFAGVManager::GetIdleAGVCount()
@@ -96,7 +114,6 @@ int32 ADFAGVManager::GetIdleAGVCount()
 		}
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("AGVManager : 대기중인 AGV는 %d 대입니다"), Count);
 	return Count;
 }
 

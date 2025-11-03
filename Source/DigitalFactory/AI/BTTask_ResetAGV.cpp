@@ -4,6 +4,8 @@
 #include "AI/BTTask_ResetAGV.h"
 #include "Robot/DFAGV.h"
 #include "AIController.h"
+#include "Manager/DFAGVManager.h"
+#include "Kismet/GameplayStatics.h"
 
 UBTTask_ResetAGV::UBTTask_ResetAGV()
 {
@@ -21,6 +23,14 @@ EBTNodeResult::Type UBTTask_ResetAGV::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	AGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None"));
 	AGV->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Idle"));
+
+	// 매니저의 GetIdleCount 호출시켜서 작업가능한 수량 갱신
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADFAGVManager::StaticClass(), FoundActors);
+	if (ADFAGVManager* Manager = Cast<ADFAGVManager>(FoundActors[0]))
+	{
+		Manager->RenewalIdleAGVCount();
+	}
 
 	return EBTNodeResult::Succeeded;
 }
