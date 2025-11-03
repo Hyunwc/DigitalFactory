@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "GameplayTagContainer.h"
+#include "DFGameplayTags.h"
 #include "BTTask_FindNextCell.generated.h"
 
 class ADFCellBase;

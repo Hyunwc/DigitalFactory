@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "GameplayTagContainer.h"
 #include "BTDecorator_HasOrder.generated.h"
 
 /**

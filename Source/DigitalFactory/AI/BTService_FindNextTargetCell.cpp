@@ -8,7 +8,7 @@
 #include "AIController.h"
 #include "EngineUtils.h"
 #include "GAS/DFAbilitySystemComponent.h"
-
+#include "DFGameplayTags.h"
 
 UBTService_FindNextTargetCell::UBTService_FindNextTargetCell()
 {
