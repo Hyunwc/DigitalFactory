@@ -68,6 +68,7 @@ void ADFLoadCell::Tick(float DeltaTime)
 
 		if (Distance > Spline->GetSplineLength())
 		{
+			OnCompleteVehicleStatus.Broadcast(Vehicle->Color);
 			OnVehicleLoadComplete.Broadcast();
 		}
 	}
