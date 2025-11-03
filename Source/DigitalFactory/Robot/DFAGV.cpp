@@ -27,6 +27,9 @@ ADFAGV::ADFAGV()
 	{
 		GetMesh()->SetSkeletalMesh(AGVMeshRef.Object);
 	}
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
