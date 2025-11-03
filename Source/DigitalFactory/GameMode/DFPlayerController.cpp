@@ -30,6 +30,7 @@ void ADFPlayerController::BeginPlay()
 		CameraMap.Add(Camera->CameraTag, Camera);
 	}
 
+	//SwitchCamera(TEXT("Main"));
 	SetViewTarget(CameraMap.FindRef(TEXT("Main")));
 }
 

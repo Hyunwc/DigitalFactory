@@ -4,6 +4,7 @@
 #include "AI/BTTask_AGVMoveTo.h"
 #include "Robot/DFAGV.h"
 #include "AIController.h"
+#include "DFGameplayTags.h"
 
 UBTTask_AGVMoveTo::UBTTask_AGVMoveTo()
 {
@@ -20,9 +21,9 @@ EBTNodeResult::Type UBTTask_AGVMoveTo::ExecuteTask(UBehaviorTreeComponent& Owner
 	}
 
 	// 목적지가 Home이 아니면 이동 중으로 표시되게.
-	if (!AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None")))
+	if (!AGV->AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_None))
 	{
-		AGV->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Move"));
+		AGV->SetAGVStateTag(DFGameplayTags::AGV_State_Move);
 		//AGV->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Return"));
 	}
 

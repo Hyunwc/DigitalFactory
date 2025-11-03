@@ -32,10 +32,11 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	// 만약 목적지가 없다면
 	ADFAGV* AGV = Cast<ADFAGV>(OwnerComp.GetAIOwner()->GetPawn());
-	if (AGV->AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.None"))))
+	
+	if (AGV->AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_None))
 	{
 		// Supply로 변경
-		AGV->AGVPhaseTag = FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply"));
+		AGV->SetAGVPhaseTag(DFGameplayTags::AGV_Phase_Supply);
 	}
 	// AGV가 가야할 셀 타입 검출
 	FGameplayTag CellTypeTag = GetCellTypeTagsForPhase(AGV->AGVPhaseTag);
@@ -50,9 +51,9 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		if (CurrentCell->CellTypeTag.MatchesTag(CellTypeTag))
 		{
 			UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
-			if (CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")) &&
-				!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
-				!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))
+			if (CellASC->HasCellState(DFGameplayTags::Cell_State_Free) &&
+				!CellASC->HasCellState(DFGameplayTags::Cell_State_Pending) &&
+				!CellASC->HasCellState(DFGameplayTags::Cell_State_Working))
 			{
 				// 하나만 찾으면 된다.
 				MoveToCell = CurrentCell;
@@ -66,11 +67,11 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 	{
 		UE_LOG(LogTemp, Log, TEXT("BTTask_Find : 예약 걸어둘게요!"));
 		UDFAbilitySystemComponent* CellASC = MoveToCell->GetDFAbilitySystemComponent();
-		if (CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")))
+		if (CellASC->HasCellState(DFGameplayTags::Cell_State_Free))
 		{
 			//CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-			CellASC->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
-			MoveToCell->SetCellStateTag(FGameplayTag::RequestGameplayTag("Cell.State.Pending"));
+			CellASC->SetCellState(DFGameplayTags::Cell_State_Pending);
+			MoveToCell->SetCellStateTag(DFGameplayTags::Cell_State_Pending);
 			MoveToCell->SetCellReservedAGV(AGV);
 		}
 
@@ -96,25 +97,25 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 
 FGameplayTag UBTTask_FindNextCell::GetCellTypeTagsForPhase(const FGameplayTag& AGVPhaseTag) const
 {
-	if (AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Supply")))
+	if (AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_Supply))
 	{
-		return FGameplayTag::RequestGameplayTag("Cell.Type.Supply");
+		return DFGameplayTags::Cell_Type_Supply;
 	}
-	else if (AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Trim")))
+	else if (AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_Trim))
 	{
-		return FGameplayTag::RequestGameplayTag("Cell.Type.Trim");
+		return DFGameplayTags::Cell_Type_Trim;
 	}
-	else if (AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Flexible")))
+	else if (AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_Flexible))
 	{
-		return FGameplayTag::RequestGameplayTag("Cell.Type.Flexible");
+		return DFGameplayTags::Cell_Type_Flexible;
 	}
-	else if (AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Inspection")))
+	else if (AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_Inspection))
 	{
-		return FGameplayTag::RequestGameplayTag("Cell.Type.Inspection");
+		return DFGameplayTags::Cell_Type_Inspection;
 	}
-	else if (AGVPhaseTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.Phase.Load")))
+	else if (AGVPhaseTag.MatchesTag(DFGameplayTags::AGV_Phase_Load))
 	{
-		return FGameplayTag::RequestGameplayTag("Cell.Type.Load");
+		return DFGameplayTags::Cell_Type_Load;
 	}
 
 	return FGameplayTag();
@@ -123,6 +124,6 @@ void UBTTask_FindNextCell::SetCellFree(ADFCellBase* CellToFree) const
 {
 	if (CellToFree && CellToFree->GetDFAbilitySystemComponent())
 	{
-		CellToFree->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
+		CellToFree->GetDFAbilitySystemComponent()->SetCellState(DFGameplayTags::Cell_State_Free);
 	}
 }

@@ -29,7 +29,7 @@ public:
 	TSubclassOf<ADFCameraActor> CameraActorClass;
 
 	// Map으로 관리하는 이유 : 매번 Array로 찾아서 순회하는 방법보다 Key(카메라 이름)값으로 찾는 것이 훨씬 빠를 것이라 생각되기 때문
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TMap<FName, ADFCameraActor*> CameraMap;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")

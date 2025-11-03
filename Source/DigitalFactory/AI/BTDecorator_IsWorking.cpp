@@ -4,6 +4,7 @@
 #include "AI/BTDecorator_IsWorking.h"
 #include "AIController.h"
 #include "Robot/DFAGV.h"
+#include "DFGameplayTags.h"
 
 UBTDecorator_IsWorking::UBTDecorator_IsWorking()
 {
@@ -19,5 +20,5 @@ bool UBTDecorator_IsWorking::CalculateRawConditionValue(UBehaviorTreeComponent& 
 	}
 
 	// 복귀 상태가 아니면 사이클 계속 돌 것.
-	return AGV->AGVStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("AGV.State.Return"));
+	return AGV->AGVStateTag.MatchesTag(DFGameplayTags::AGV_State_Return);
 }
