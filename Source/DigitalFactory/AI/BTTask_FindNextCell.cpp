@@ -83,6 +83,13 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 			NextLoc.X, NextLoc.Y, NextLoc.Z);
 		return EBTNodeResult::Succeeded;
 	}
+	else
+	{
+		// 만약 찾지 못했을 경우 
+		UE_LOG(LogTemp, Warning, TEXT("BTTask_Find : 이동할 셀을 찾지 못했습니다. 재시도 필요"));
+
+		return EBTNodeResult::Failed;
+	}
 
 	return EBTNodeResult::InProgress;
 }
@@ -111,7 +118,6 @@ FGameplayTag UBTTask_FindNextCell::GetCellTypeTagsForPhase(const FGameplayTag& A
 	}
 
 	return FGameplayTag();
-
 }
 void UBTTask_FindNextCell::SetCellFree(ADFCellBase* CellToFree) const
 {
