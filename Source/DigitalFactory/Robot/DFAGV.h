@@ -81,9 +81,12 @@ public:
 	FLinearColor OrderColor;
 
 	// AGV 고유의 이름 -> AGVProgress에 이름으로 표시하기 위함
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "GAS")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "UI")
 	FName AGVName;
 
+	// 탐색할 셀의 Number
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Cell")
+	int32 FindCellNum;
 public:
 	// AGVPhase가 변경됐음을 알릴 델리게이트
 	UPROPERTY(BlueprintAssignable, Category = "AGV")

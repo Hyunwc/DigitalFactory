@@ -29,12 +29,15 @@ ADFAGV::ADFAGV()
 	}
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	// 이동 방향으로 회전
 	GetCharacterMovement()->bOrientRotationToMovement = false;
-	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);
+
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	//GetCharacterMovement()->bOri
+
+	FindCellNum = 0;
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 

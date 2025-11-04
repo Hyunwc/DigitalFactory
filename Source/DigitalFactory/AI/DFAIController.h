@@ -38,8 +38,8 @@ private:
 	UBehaviorTree* BTAsset;
 
 public:
-	//UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
-	//bool bUseCrowdFollowing = false;
+	UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
+	bool bUseCrowdFollowing = false;
 
 	UPROPERTY(EditAnywhere, Category = "Crowd Avoidance")
 	bool bEnableCrowdAvoidance = true;

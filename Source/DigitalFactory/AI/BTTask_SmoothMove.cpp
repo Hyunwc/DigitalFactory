@@ -66,7 +66,10 @@ void UBTTask_SmoothMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	//FVector Direction = (TargetLocation - CurrentLocation).GetSafeNormal2D();
 	//if (!Direction.IsNearlyZero())
 	//{
-	//	FRotator TargetRotation = Direction.Rotation();
+	//	float RawYaw = Direction.Rotation().Yaw;
+	//	float SnappedYaw = FMath::RoundToFloat(RawYaw / 90.0f) * 90.0f;
+	//
+	//	FRotator TargetRotation = FRotator(0.0f, SnappedYaw, 0.0f);
 	//	FRotator CurrentRotation = AIOwner->GetActorRotation();
 	//
 	//	FRotator NewRotation = FMath::RInterpTo(
@@ -75,10 +78,10 @@ void UBTTask_SmoothMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	//		DeltaSeconds,
 	//		5.0f
 	//	);
-	//
+	//	
 	//	AIOwner->SetActorRotation(NewRotation);
+	//	UE_LOG(LogTemp, Warning, TEXT("BTSmooth : 새로운 로테이션 %f"), NewRotation.Yaw);
 	//}
-
 	AIOwner->SetActorLocation(NewLocation);
 
 	if (Alpha >= 1.0f)
@@ -86,7 +89,11 @@ void UBTTask_SmoothMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		//FVector FinalDirection = (TargetLocation - CurrentLocation).GetSafeNormal2D();
 		//if (!FinalDirection.IsNearlyZero())
 		//{
-		//	AIOwner->SetActorRotation(FinalDirection.Rotation());
+		//	float RawYaw = FinalDirection.Rotation().Yaw;
+		//	float SnappedYaw = FMath::RoundToFloat(RawYaw / 90.0f) * 90.0f;
+		//
+		//	UE_LOG(LogTemp, Warning, TEXT("BTSmooth : 최종 로테이션 %f"), FinalDirection.Rotation().Yaw);
+		//	AIOwner->SetActorRotation(FRotator(0.0f, SnappedYaw, 0.0f));
 		//}
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}

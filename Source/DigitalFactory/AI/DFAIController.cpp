@@ -27,6 +27,8 @@ ADFAIController::ADFAIController()
 		BTAsset = BTAssetRef.Object;
 	}
 
+	//bEnableCrowdAvoidance = true;
+
 	bEnableCrowdAvoidance = false;
 	AvoidanceRangeMultiplier = 1.0f;
 	CollisionQueryRange = 500.0f;

@@ -61,7 +61,7 @@ void UDFGA_FindNextCell::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		if (CurrentCell->CellTypeTag.MatchesTag(CellTypeTag))
 		{
 			UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
-
+			
 			if (CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free")) &&
 				!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Pending")) &&
 				!CellASC->HasCellState(FGameplayTag::RequestGameplayTag("Cell.State.Working")))

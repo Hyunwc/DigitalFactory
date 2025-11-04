@@ -51,8 +51,10 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		// 검출한 셀 타입과 탐색한 셀 타입이 일치하는지 체크(Cell.Type)
 		if (CurrentCell->CellTypeTag.MatchesTag(CellTypeTag))
 		{
+			// 비어있으면서 작업이나 예약중이면 안되고 AGV의 넘버와 같아야함.
 			UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
-			if (CellASC->HasCellState(DFGameplayTags::Cell_State_Free) &&
+			if ((AGV->FindCellNum == CurrentCell->CellPriority) &&
+				CellASC->HasCellState(DFGameplayTags::Cell_State_Free) &&
 				!CellASC->HasCellState(DFGameplayTags::Cell_State_Pending) &&
 				!CellASC->HasCellState(DFGameplayTags::Cell_State_Working))
 			{
