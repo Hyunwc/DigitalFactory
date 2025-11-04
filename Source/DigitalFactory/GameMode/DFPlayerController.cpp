@@ -42,7 +42,7 @@ void ADFPlayerController::SwitchCamera(FName CameraTag)
 	}
 
 	// 넘겨 받은 키랑 일치하는 Value(카메라)를 찾아서 체인지
-	SetViewTargetWithBlend(CameraMap.FindRef(CameraTag), 1.0f);
+	SetViewTargetWithBlend(CameraMap.FindRef(CameraTag), 0.0f);
 
 	// 시점이 바꼈다는 것을 구독자에게 알림
 	OnCameraViewChanged.Broadcast(CameraMap.FindRef(CameraTag)->DisplayName);
