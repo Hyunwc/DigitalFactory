@@ -87,6 +87,10 @@ public:
 	// 탐색할 셀의 Number
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Cell")
 	int32 FindCellNum;
+
+	// AGV List에 추가될 순서
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Cell")
+	int32 AGVListNumber;
 public:
 	// AGVPhase가 변경됐음을 알릴 델리게이트
 	UPROPERTY(BlueprintAssignable, Category = "AGV")

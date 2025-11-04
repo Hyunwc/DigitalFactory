@@ -23,6 +23,7 @@ EBTNodeResult::Type UBTTask_ResetAGV::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	AGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag("AGV.Phase.None"));
 	AGV->SetAGVStateTag(FGameplayTag::RequestGameplayTag("AGV.State.Idle"));
+	AGV->SetOrderColor(FLinearColor(0, 0, 0, 0));
 
 	// 매니저의 GetIdleCount 호출시켜서 작업가능한 수량 갱신
 	TArray<AActor*> FoundActors;
