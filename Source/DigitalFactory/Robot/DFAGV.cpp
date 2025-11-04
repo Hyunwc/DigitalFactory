@@ -38,6 +38,7 @@ ADFAGV::ADFAGV()
 	bUseControllerRotationRoll = false;
 
 	FindCellNum = 0;
+	AGVListNumber = 0;
 
 	DFASC = CreateDefaultSubobject<UDFAbilitySystemComponent>(TEXT("DFASC"));
 
