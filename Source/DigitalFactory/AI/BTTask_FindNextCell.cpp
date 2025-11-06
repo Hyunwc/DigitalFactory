@@ -42,6 +42,8 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 	// AGV가 가야할 셀 타입 검출
 	FGameplayTag CellTypeTag = GetCellTypeTagsForPhase(AGV->AGVPhaseTag);
 
+	const int32 TargetCellNum = AGV->FindCellNum;
+
 	ADFCellBase* MoveToCell = nullptr;
 
 	// 탐색
@@ -53,7 +55,7 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		{
 			// 비어있으면서 작업이나 예약중이면 안되고 AGV의 넘버와 같아야함.
 			UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
-			if ((AGV->FindCellNum == CurrentCell->CellPriority) &&
+			if ((TargetCellNum == CurrentCell->CellPriority) &&
 				CellASC->HasCellState(DFGameplayTags::Cell_State_Free) &&
 				!CellASC->HasCellState(DFGameplayTags::Cell_State_Pending) &&
 				!CellASC->HasCellState(DFGameplayTags::Cell_State_Working))
@@ -85,7 +87,7 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		//FVector NextLoc = BlackboardComp->GetValueAsVector(NextTargetLocationKey);
 		//UE_LOG(LogTemp, Warning, TEXT("BTFind x : %f, y : %f, z : %f"),
 		//	NextLoc.X, NextLoc.Y, NextLoc.Z);
-		MoveToCell = nullptr;
+		//MoveToCell = nullptr;
 		return EBTNodeResult::Succeeded;
 	}
 	else

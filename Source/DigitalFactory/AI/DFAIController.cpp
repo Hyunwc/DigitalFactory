@@ -61,6 +61,7 @@ void ADFAIController::RunAI()
 			CurrentAGV->SetAGVPhaseTag(FGameplayTag::RequestGameplayTag(TEXT("AGV.Phase.Supply")));
 		}
 
+		//CurrentAGV = nullptr;
 		// 다음 작업할 단계 미리 설정
 		//Blackboard->SetValueAsName(BBKEY_CURRENTPHASE, FGameplayTag::RequestGameplayTag("AGV.Phase.Supply").GetTagName());
 
