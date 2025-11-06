@@ -14,6 +14,7 @@
 #include "RigVMHost.h"
 #include "GAS/GA/DFGA_RobotArmMasterAbility.h"
 #include "GAS/GA/DFGA_TargetAttach.h"
+#include "DFGameplayTags.h"
 
 ADFRobotArm::ADFRobotArm()
 {
@@ -182,6 +183,10 @@ void ADFRobotArm::NotifySubAbilityFinished()
 void ADFRobotArm::HandleAbilityFinished(FGameplayTag OwnerTag, bool bFinished)
 {
 	UE_LOG(LogTemp, Warning, TEXT("로봇암 : 마스터 어빌리티에게 끝났단 신호받음. 다음 구독자에게 보냄"));
+
+	TargetActor = nullptr;
+	TargetAGV = nullptr;
+	PhaseTag = DFGameplayTags::RobotArm_CombinePhase_Front;
 	OnRobotArmFinished.Broadcast(OwnerTag, bFinished);
 }
 

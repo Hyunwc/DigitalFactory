@@ -26,10 +26,11 @@ void ADFTrimCell::StartWork(ADFAGV* TargetAGV)
 	if (LeftRobotArm && RightRobotArm)
 	{
 		UE_LOG(LogTemp, Log, TEXT("트림셀 : 구독할게요"));
+		LeftRobotArm->OnRobotArmFinished.RemoveDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
 		LeftRobotArm->OnRobotArmFinished.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
-		LeftRobotArm->OnReadyTireSpawn.AddDynamic(this, &ADFTrimCell::HandleTireSpawn);
+		//LeftRobotArm->OnReadyTireSpawn.AddDynamic(this, &ADFTrimCell::HandleTireSpawn);
 		//RightRobotArm->OnRobotArmFinished.AddDynamic(this, &ADFTrimCell::OnFinishTrimCellWork);
-		RightRobotArm->OnReadyTireSpawn.AddDynamic(this, &ADFTrimCell::HandleTireSpawn);
+		//RightRobotArm->OnReadyTireSpawn.AddDynamic(this, &ADFTrimCell::HandleTireSpawn);
 	}
 
 	LeftRobotArm->StartRobotArmAbility();

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "GameplayTagContainer.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "DFRobotArm.generated.h"
 
 class USceneComponent;

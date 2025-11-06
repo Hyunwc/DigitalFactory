@@ -5,6 +5,7 @@
 #include "GAS/DFAbilitySystemComponent.h"
 #include "Robot/DFRobotArm.h"
 #include "GAS/GA/DFGA_SubAbilityBase.h"
+#include "Robot/DFAGV.h"
 
 UDFGA_RobotArmMasterAbility::UDFGA_RobotArmMasterAbility()
 {
@@ -53,6 +54,7 @@ void UDFGA_RobotArmMasterAbility::NextAbility()
 
 	if (CurrentPhase == ERobotArmPhase::Finished)
 	{
+		// 종료 전에 로봇암 데이터 초기화
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
