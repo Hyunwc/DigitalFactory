@@ -19,8 +19,8 @@ ADFRobotArm::ADFRobotArm()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	AIControllerClass = ADFRobotArmAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	//AIControllerClass = ADFRobotArmAIController::StaticClass();
+	//AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
@@ -115,15 +115,17 @@ void ADFRobotArm::StartRobotArmAbility()
 		{
 			if (UDFGA_TargetAttach* AttachGA = Cast<UDFGA_TargetAttach>(Spec->GetPrimaryInstance()))
 			{
+				// 기존 바인딩된 델리게이트 해제 후 구독
+				AttachGA->OnTargetAttachSucceed.RemoveDynamic(this, &ADFRobotArm::HandleAttachFinished);
 				AttachGA->OnTargetAttachSucceed.AddDynamic(this, &ADFRobotArm::HandleAttachFinished);
-				if (AttachGA->OnTargetAttachSucceed.IsAlreadyBound(this, &ADFRobotArm::HandleAttachFinished))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("로봇암 : 타겟 델리게이트 바인딩 성공"));
-				}
-				else
-				{
-					UE_LOG(LogTemp, Error, TEXT("로봇암 : 타겟 델리게이트 바인딩 실패"));
-				}
+				//if (AttachGA->OnTargetAttachSucceed.IsAlreadyBound(this, &ADFRobotArm::HandleAttachFinished))
+				//{
+				//	UE_LOG(LogTemp, Warning, TEXT("로봇암 : 타겟 델리게이트 바인딩 성공"));
+				//}
+				//else
+				//{
+				//	UE_LOG(LogTemp, Error, TEXT("로봇암 : 타겟 델리게이트 바인딩 실패"));
+				//}
 			}
 		}
 	}
@@ -142,6 +144,7 @@ void ADFRobotArm::StartRobotArmAbility()
 
 				if (!bIsBound)
 				{
+					Master->OnFinishTireAssembly.RemoveDynamic(this, &ADFRobotArm::HandleAbilityFinished);
 					Master->OnFinishTireAssembly.AddDynamic(this, &ADFRobotArm::HandleAbilityFinished);
 					UE_LOG(LogTemp, Warning, TEXT("로봇암 : 델리게이트 바인딩 시도"));
 
