@@ -82,9 +82,10 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		BlackboardComp->SetValueAsVector(NextTargetLocationKey, MoveToCell->AGVTargetPoint->GetComponentLocation());
 		BlackboardComp->SetValueAsObject(CurrentTargetCellKey, MoveToCell);
 
-		FVector NextLoc = BlackboardComp->GetValueAsVector(NextTargetLocationKey);
-		UE_LOG(LogTemp, Warning, TEXT("BTFind x : %f, y : %f, z : %f"),
-			NextLoc.X, NextLoc.Y, NextLoc.Z);
+		//FVector NextLoc = BlackboardComp->GetValueAsVector(NextTargetLocationKey);
+		//UE_LOG(LogTemp, Warning, TEXT("BTFind x : %f, y : %f, z : %f"),
+		//	NextLoc.X, NextLoc.Y, NextLoc.Z);
+		MoveToCell = nullptr;
 		return EBTNodeResult::Succeeded;
 	}
 	else
