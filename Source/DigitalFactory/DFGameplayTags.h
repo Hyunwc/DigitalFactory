@@ -3,7 +3,6 @@
 #pragma once
 
 #include "NativeGameplayTags.h"
-//#include "GameplayTagContainer.h"
 
 namespace DFGameplayTags
 {

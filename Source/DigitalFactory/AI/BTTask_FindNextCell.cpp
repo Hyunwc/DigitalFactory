@@ -54,11 +54,10 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		if (CurrentCell->CellTypeTag.MatchesTag(CellTypeTag))
 		{
 			// 비어있으면서 작업이나 예약중이면 안되고 AGV의 넘버와 같아야함.
-			UDFAbilitySystemComponent* CellASC = CurrentCell->GetDFAbilitySystemComponent();
 			if ((TargetCellNum == CurrentCell->CellPriority) &&
-				CellASC->HasCellState(DFGameplayTags::Cell_State_Free) &&
-				!CellASC->HasCellState(DFGameplayTags::Cell_State_Pending) &&
-				!CellASC->HasCellState(DFGameplayTags::Cell_State_Working))
+				CurrentCell->CellStateTag.MatchesTag(DFGameplayTags::Cell_State_Free) &&
+				!CurrentCell->CellStateTag.MatchesTag(DFGameplayTags::Cell_State_Pending) &&
+				!CurrentCell->CellStateTag.MatchesTag(DFGameplayTags::Cell_State_Working))
 			{
 				// 하나만 찾으면 된다.
 				MoveToCell = CurrentCell;
@@ -68,26 +67,15 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 	}
 
 	// 예약 걸어두기
-	if (MoveToCell)
+	if (MoveToCell && MoveToCell->CellStateTag.MatchesTag(DFGameplayTags::Cell_State_Free))
 	{
-		UE_LOG(LogTemp, Log, TEXT("BTTask_Find : 예약 걸어둘게요!"));
-		UDFAbilitySystemComponent* CellASC = MoveToCell->GetDFAbilitySystemComponent();
-		if (CellASC->HasCellState(DFGameplayTags::Cell_State_Free))
-		{
-			//CellASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-			CellASC->SetCellState(DFGameplayTags::Cell_State_Pending);
-			MoveToCell->SetCellStateTag(DFGameplayTags::Cell_State_Pending);
-			MoveToCell->SetCellReservedAGV(AGV);
-		}
+		MoveToCell->SetCellStateTag(DFGameplayTags::Cell_State_Pending);
+		MoveToCell->SetCellReservedAGV(AGV);
 
 		// 블랙보드 Next좌표와 참조 셀 갱신
 		BlackboardComp->SetValueAsVector(NextTargetLocationKey, MoveToCell->AGVTargetPoint->GetComponentLocation());
 		BlackboardComp->SetValueAsObject(CurrentTargetCellKey, MoveToCell);
 
-		//FVector NextLoc = BlackboardComp->GetValueAsVector(NextTargetLocationKey);
-		//UE_LOG(LogTemp, Warning, TEXT("BTFind x : %f, y : %f, z : %f"),
-		//	NextLoc.X, NextLoc.Y, NextLoc.Z);
-		//MoveToCell = nullptr;
 		return EBTNodeResult::Succeeded;
 	}
 	else

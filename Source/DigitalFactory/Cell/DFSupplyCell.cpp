@@ -70,12 +70,10 @@ void ADFSupplyCell::StartWork(ADFAGV* TargetAGV)
 		{
 			AbilityHandle = DFASC->GiveAbility(
 				FGameplayAbilitySpec(CellWorkAbilityClass, 1, 0, this));
-			UE_LOG(LogTemp, Warning, TEXT("%s : 스펙 없으니까 새로 줄게!"), *this->GetName());
 		}
 		else
 		{
 			AbilityHandle = Spec->Handle;
-			UE_LOG(LogTemp, Warning, TEXT("%s : 이미있네?"), *this->GetName());
 		}
 
 		if (AbilityHandle.IsValid())

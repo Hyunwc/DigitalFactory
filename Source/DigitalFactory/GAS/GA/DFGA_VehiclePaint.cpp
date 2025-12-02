@@ -44,17 +44,12 @@ void UDFGA_VehiclePaint::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 		return;
 	}
 
-	// 작업 종료 태그 적용
+	// 작업 종료 
 	if (OwningCell && OwningCell->GetDFAbilitySystemComponent())
 	{
-		OwningCell->GetDFAbilitySystemComponent()->SetCellState(FGameplayTag::RequestGameplayTag("Cell.State.Free"));
-
 		// 작업이 완료되었음을 델리게이트를 통해 알림
 		OwningCell->OnCellWorkComplete.Broadcast(OwningCell);
 	}
-
-	//OwningCell = nullptr;
-	//TargetAGV = nullptr;
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
