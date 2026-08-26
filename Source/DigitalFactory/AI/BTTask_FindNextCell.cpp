@@ -86,7 +86,7 @@ EBTNodeResult::Type UBTTask_FindNextCell::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 	}
 
-	return EBTNodeResult::InProgress;
+	//return EBTNodeResult::InProgress;
 }
 
 FGameplayTag UBTTask_FindNextCell::GetCellTypeTagsForPhase(const FGameplayTag& AGVPhaseTag) const
