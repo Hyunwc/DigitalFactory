@@ -32,7 +32,7 @@ protected:
 	FName NextTargetLocationKey;
 
 	// 다음에 목표를 삼을 Cell 액터를 저장할 블랙보드 (필요할까 싶지만 일단 넣고)
-	UPROPERTY(EditAnywhere, Category = "Blackboard", meta = (AllowedClasses = "DFCellBase"))
+	UPROPERTY(EditAnywhere, Category = "Blackboard"/*, meta = (AllowedClasses = "DFCellBase")*/)
 	FName CurrentTargetCellKey;
 
 public:
